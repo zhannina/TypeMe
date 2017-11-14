@@ -3,10 +3,11 @@ package com.example.zsarsenbayev.typeme;
 import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
-import java.util.StringTokenizer;
 
 public class TypingTaskActivity extends AppCompatActivity {
 
@@ -118,7 +117,8 @@ public class TypingTaskActivity extends AppCompatActivity {
         newTexts = new ArrayList<>();
         correctedLetters = new ArrayList<>();
 
-        userInputEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS); // to disable autocompletion and autocorrection
+        userInputEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES); // to disable autocompletion and autocorrection
 
         setMessage();
 
@@ -190,6 +190,7 @@ public class TypingTaskActivity extends AppCompatActivity {
             }
         });
 
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,7 +212,7 @@ public class TypingTaskActivity extends AppCompatActivity {
                 Log.d("STRING NEW", newTexts+"");
 
                 stringBuilder.append(String.format("%s, %s, %s, %s, %s, %s, %s, %d, %s, %d, %s, %s, %s, %s, %s, %d\n", date, participantCode,
-                        genderCode, conditionCode, blockCode, startTimeStampStr, endTimeStampStr, timeMillis, displayedSentence, backSpaceCount, userInputString, difficulty, oldTexts, newTexts, correctedLetters));
+                        genderCode, conditionCode, blockCode, startTimeStampStr, endTimeStampStr, timeMillis, displayedSentence, backSpaceCount, userInputString, difficulty, oldTexts, newTexts, correctedLetters, numberOfCorrectedLetters));
 
                 try {
                     bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());

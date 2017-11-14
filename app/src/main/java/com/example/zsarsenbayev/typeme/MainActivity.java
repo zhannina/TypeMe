@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
           "P21", "P22", "P23", "P24", "P25", "P26", "P27", "P28", "P29", "P30", "P99"};
     private String[] genderCode = {"M", "F"};
     private String[] conditionCode = {"Music-Fast", "Music-Slow", "Urban-Indoor", "Urban-Outdoor", "Speech-English", "Speech-Foreign", "Silent", "Training"};
-    private String[] blockCode = {"B01", "B02", "B03", "B04", "B05", "B06"};
+    private String[] blockCode = {"B01"};
 
     SharedPreferences sharedPrefs;
 

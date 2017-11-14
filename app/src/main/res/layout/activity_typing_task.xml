@@ -21,7 +21,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:maxLines="4"
+        android:inputType="textMultiLine"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:id="@+id/userInputEditText"
