@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("HEADERS", false);
         editor.commit();
-        Intent i = new Intent(MainActivity.this, TypingTaskActivity.class);
+//        Intent i = new Intent(MainActivity.this, TypingTaskActivity.class);
+        Intent i = new Intent(MainActivity.this, CirclesActivity.class);
         startActivity(i);
     }
 
