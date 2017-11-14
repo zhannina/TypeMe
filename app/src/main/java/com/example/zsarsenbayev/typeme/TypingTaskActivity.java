@@ -53,6 +53,8 @@ public class TypingTaskActivity extends AppCompatActivity {
     private ArrayList<String> oldTexts;
     private ArrayList<String> newTexts;
     private ArrayList<String> correctedLetters;
+    private ArrayList<String> tempSimpleSentences;
+    private ArrayList<String> tempDifficSentences;
 
     private int numberOfCorrectedLetters = 0;
 
@@ -70,7 +72,8 @@ public class TypingTaskActivity extends AppCompatActivity {
 
     InputMethodManager imm;
 
-    private ArrayList<String> simpleSentences = new ArrayList<String>(Arrays.asList("Joe went to the store",
+    private ArrayList<String> simpleSentences = new ArrayList<String>(Arrays.asList(
+            "Joe went to the store",
             "Sarah and Jessie are going swimming",
             "The frog jumped and landed in the pond",
             "Can I have some juice to drink?",
@@ -116,6 +119,16 @@ public class TypingTaskActivity extends AppCompatActivity {
         oldTexts = new ArrayList<>();
         newTexts = new ArrayList<>();
         correctedLetters = new ArrayList<>();
+
+        tempSimpleSentences = new ArrayList<>();
+        tempDifficSentences = new ArrayList<>();
+
+        if (tempSimpleSentences.size()==0){
+            tempSimpleSentences.addAll(simpleSentences);
+        }
+        if (tempDifficSentences.size()==0){
+            tempDifficSentences.addAll(difficultSentences);
+        }
 
         userInputEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS |
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES); // to disable autocompletion and autocorrection
@@ -201,7 +214,7 @@ public class TypingTaskActivity extends AppCompatActivity {
                 Log.d("TIME end: ", "" + endTimeStamp);
                 Log.d("timeMillis: ", "" + timeMillis);
                 userInputString = userInputEditText.getText().toString();
-                if (count < 2) {
+                if (count < 4) {
                     setMessage();
                 } else{
                     finish();
@@ -237,21 +250,28 @@ public class TypingTaskActivity extends AppCompatActivity {
 
     private void setMessage() {
         Random r = new Random(System.nanoTime());
-        int i = r.nextInt(simpleSentences.size());
+        int i = r.nextInt(tempSimpleSentences.size());
+
+        Log.d("RANDOM", ""+i);
+
         if (mode == 1){
-            displayedSentence = simpleSentences.get(i);
+            displayedSentence = tempSimpleSentences.get(i);
             Log.d("DisplaySentence: ", displayedSentence);
-            messageTextView.setText(simpleSentences.get(i));
+            messageTextView.setText(displayedSentence);
             mode = 2;
             difficulty = "easy";
             count++;
+            tempSimpleSentences.remove(i);
+            Log.d("TEMP",tempSimpleSentences+"");
         } else if (mode == 2){
-            displayedSentence = difficultSentences.get(i);
+            displayedSentence = tempDifficSentences.get(i);
             Log.d("DisplaySentence: ", displayedSentence);
-            messageTextView.setText(difficultSentences.get(i));
+            messageTextView.setText(displayedSentence);
             mode = 1;
             difficulty = "difficult";
             count++;
+            tempDifficSentences.remove(i);
+            Log.d("TEMP",tempDifficSentences+"");
         }
 
     }
