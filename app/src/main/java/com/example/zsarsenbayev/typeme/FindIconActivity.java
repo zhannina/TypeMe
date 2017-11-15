@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import java.util.Random;
 public class FindIconActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST = 12;
-
     Button continueBtn;
     ImageView imageToShow;
 
@@ -47,12 +47,6 @@ public class FindIconActivity extends AppCompatActivity {
         populateArrayList();
         SharedPreferences prefs = getSharedPreferences(DisplayGridActivity.MyPREFERENCES, Context.MODE_PRIVATE);
 
-        classList = new ArrayList<Class<?>>();
-        ArrayList test = getIntent().getParcelableArrayListExtra("activity");
-
-        for(int i = 0; i < test.size(); i++){
-            classList.add((Class<?>)test.get(i));
-        }
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("FIRSTTIME", true);
         editor.commit();
@@ -74,9 +68,17 @@ public class FindIconActivity extends AppCompatActivity {
 
         startTime = System.currentTimeMillis();
 
+        classList = new ArrayList<Class<?>>();
+        ArrayList test = getIntent().getParcelableArrayListExtra("activity");
+
+        for(int i = 0; i < test.size(); i++){
+            classList.add((Class<?>)test.get(i));
+        }
+
         SharedPreferences prefs = getSharedPreferences(DisplayGridActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         if (iconsMap.isEmpty() && !prefs.getBoolean("FIRSTTIME", true)) {
-            finish();
+//            finish();
+            finishActivity();
         } else {
             initializeHash();
 
@@ -201,14 +203,31 @@ public class FindIconActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST);
-
         }
-        else
-        {
+        else {
             Log.d("TAG", "Whatever3");
 
         }
     }
+
+    public void finishActivity(){
+
+        if(classList.size()!=0) {
+            Random r = new Random();
+            int i = r.nextInt(classList.size());
+            Intent intent = new Intent(FindIconActivity.this, classList.get(i));
+            classList.remove(i);
+            Log.d("CLASSLIST ICONS", classList+"");
+            intent.putExtra("activity", classList);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(getApplicationContext(), "Please return the phone", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+    }
+
 
     public static class CellContent implements Serializable {
 

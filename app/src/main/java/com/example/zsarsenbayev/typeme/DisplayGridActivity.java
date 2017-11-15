@@ -44,8 +44,6 @@ public class DisplayGridActivity extends AppCompatActivity {
     GridView gridView;
     GridViewCustomAdapter gridViewCustomAdapter;
 
-    ArrayList<Class<?>> classList;
-
     FindIconActivity.CellContent passedIcon;
     ArrayList<FindIconActivity.CellContent> iconsCopy = new ArrayList<FindIconActivity.CellContent>(FindIconActivity.icons);
     int passedPosition;
@@ -58,13 +56,6 @@ public class DisplayGridActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        classList = new ArrayList<Class<?>>();
-        ArrayList test = getIntent().getParcelableArrayListExtra("activity");
-
-        for(int i = 0; i < test.size(); i++){
-            classList.add((Class<?>)test.get(i));
-        }
     }
 
     @Override
@@ -183,8 +174,6 @@ public class DisplayGridActivity extends AppCompatActivity {
                 float textCenterX = view.findViewById(R.id.textView).getX() + view.findViewById(R.id.textView).getWidth() / 2 + viewStartX;
                 float textCenterY = view.findViewById(R.id.textView).getY() + view.findViewById(R.id.textView).getHeight() / 2 + viewStartY;
 
-
-
                 Long tsLong = System.currentTimeMillis();
                 String ts = tsLong.toString();
                 String date = DateFormat.getDateTimeInstance().format(new Date());
@@ -229,7 +218,7 @@ public class DisplayGridActivity extends AppCompatActivity {
                         Log.e("MYDEBUG", "ERROR WRITING TO DATA FILES: e = " + e);
                     }
                     stringBuilder.delete(0, stringBuilder.length());
-                    finishActivity();
+                    finish();
                 } else {
                     counter++;
                     stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%d,%d,%s,%s,#1,#2,#3,#4,%f,%f,#5,#6,#7,#8,%d,false\n", ts, date, participantCode,
@@ -253,19 +242,4 @@ public class DisplayGridActivity extends AppCompatActivity {
         finish();
     }
 
-    public void finishActivity(){
-
-        if(classList.size()!=0) {
-            Random r = new Random();
-            int i = r.nextInt(classList.size());
-            Intent intent = new Intent(DisplayGridActivity.this, classList.get(i));
-            classList.remove(i);
-
-            intent.putExtra("activity", classList);
-            startActivity(intent);
-        }else{
-            finish();
-        }
-
-    }
 }

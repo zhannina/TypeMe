@@ -305,12 +305,14 @@ public class TypingTaskActivity extends AppCompatActivity {
             int i = r.nextInt(classList.size());
             Intent intent = new Intent(TypingTaskActivity.this, classList.get(i));
             classList.remove(i);
-
+            Log.d("CLASSLIST TYPING", classList+"");
             intent.putExtra("activity", classList);
             startActivity(intent);
+            finish();
         }
         else{
-            Toast.makeText(TypingTaskActivity.this, "List Empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(TypingTaskActivity.this, "Please return the phone", Toast.LENGTH_LONG).show();
+            finish();
         }
 
     }

@@ -343,12 +343,15 @@ public class MyView extends View {
             int i = r.nextInt(classList.size());
             Intent intent  = new Intent(this.getContext(), classList.get(i));
             classList.remove(i);
-
+            Log.d("CLASSLIST CIRCLES", classList+"");
             intent.putExtra("activity", classList);
             getContext().startActivity(intent);
-        }else{
-//            Toast.makeText(this.getContext(), "List Empty", Toast.LENGTH_SHORT).show();
             ((Activity)this.getContext()).finish();
+            System.exit(0);
+        }else{
+            Toast.makeText(this.getContext(), "Please return the phone", Toast.LENGTH_LONG).show();
+            ((Activity)this.getContext()).finish();
+            System.exit(0);
         }
     }
 
