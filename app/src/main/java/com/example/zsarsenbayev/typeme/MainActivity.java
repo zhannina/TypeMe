@@ -1,15 +1,21 @@
 package com.example.zsarsenbayev.typeme;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +23,13 @@ public class MainActivity extends AppCompatActivity {
     private Button saveButton;
     private Button exitButton;
 
+    public static ArrayList<Integer> randomsArray;// = new ArrayList<>(Arrays.asList(0, 1, 2));
+    public static ArrayList<Class<?>> activities;
+    public static ArrayList<Class> shuffledActivities = new ArrayList<>();
+
+
     private Spinner spinParticipant, spinGender, spinCondition, spinBlock;
+    int randomNumber;
 
     private String[] participantCode = {"P01", "P02", "P03", "P04", "P05", "P06", "P07", "P08",
           "P09", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20",
@@ -43,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
         spinCondition = (Spinner) findViewById(R.id.paramCondition);
         spinBlock = (Spinner) findViewById(R.id.paramBlock);
 
+        activities = new ArrayList<Class<?>>();
+
+        activities.add(CirclesActivity.class);
+        activities.add(FindIconActivity.class);
+        activities.add(TypingTaskActivity.class);
+
+
         sharedPrefs = this.getPreferences(MODE_PRIVATE);
         participantCode[0] = sharedPrefs.getString("participantCode", participantCode[0]);
         genderCode[0] = sharedPrefs.getString("genderCode", genderCode[0]);
@@ -67,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 clickSave();
-                startTypingActivity();
+                startMyActivity();
             }
         });
 
@@ -93,19 +112,16 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("conditionCode", conditionCode[spinCondition.getSelectedItemPosition()]);
         editor.putString("blockCode", blockCode[spinBlock.getSelectedItemPosition()]);
         editor.commit();
-//        Toast.makeText(this, "Preferences saved!", Toast.LENGTH_SHORT).show();
     }
 
-    private void startTypingActivity() {
-        SharedPreferences prefs;
-        prefs = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("HEADERS", false);
-        editor.commit();
-//        Intent i = new Intent(MainActivity.this, TypingTaskActivity.class);
-//        Intent i = new Intent(MainActivity.this, CirclesActivity.class);
-        Intent i = new Intent(MainActivity.this, FindIconActivity.class);
-        startActivity(i);
+    private void startMyActivity() {
+
+        Random r = new Random();
+        randomNumber = r.nextInt(activities.size());
+        Intent intent  = new Intent(MainActivity.this, activities.get(randomNumber));
+        activities.remove(randomNumber);
+        intent.putExtra("activity", activities);
+        startActivity(intent);
     }
 
     public void clickExit() {

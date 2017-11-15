@@ -1,6 +1,7 @@
 package com.example.zsarsenbayev.typeme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ public class CirclesActivity extends AppCompatActivity {
 
     SharedPreferences prefs;
     public static final String MYPREFS = "MyPrefs";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

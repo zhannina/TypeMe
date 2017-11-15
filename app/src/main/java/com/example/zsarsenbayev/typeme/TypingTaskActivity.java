@@ -2,6 +2,7 @@ package com.example.zsarsenbayev.typeme;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -58,6 +60,8 @@ public class TypingTaskActivity extends AppCompatActivity {
 
     private int numberOfCorrectedLetters = 0;
 
+    ArrayList<Class<?>> classList;
+
     public static final String WORKING_DIRECTORY = "/TypeMeData/";
     final String HEADER = "Date, Participant, Gender, Condition, Block, " +
             "StartTimeStamp, EndTimeStamp, TimeToType(ms), DisplayedMessage, BackspaceCount, UserInputMessage, Difficulty, TextBeforeChange, TextAfterChange, CorrectedLettersArray, NumberOfCorrectedLetters\n";
@@ -91,12 +95,19 @@ public class TypingTaskActivity extends AppCompatActivity {
             "O, learn to read what silent love hath writ: To hear with eyes belongs to love's fine wit",
             "But day doth daily draw my sorrows longer And night doth nightly make grief's strength seem stronger",
             "Yet him for this my love no whit disdaineth; Suns of the world may stain when heaven's sun staineth"));
-
+//    private int myRandomNumber;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        classList = new ArrayList<Class<?>>();
+        ArrayList test = getIntent().getParcelableArrayListExtra("activity");
+        for(int i = 0; i < test.size(); i++){
+            classList.add((Class<?>)test.get(i));
+        }
+
     }
 
     @Override
@@ -217,7 +228,7 @@ public class TypingTaskActivity extends AppCompatActivity {
                 if (count < 4) {
                     setMessage();
                 } else{
-                    finish();
+                    finishActivity();
                 }
                 Log.d("BACK", "" + backSpaceCount);
 
@@ -285,5 +296,22 @@ public class TypingTaskActivity extends AppCompatActivity {
             Log.e("MYDEBUG", "ERROR CLOSING THE DATA FILES: e = " + e);
         }
         finish();
+    }
+
+    public void finishActivity(){
+
+        if(classList.size()!=0) {
+            Random r = new Random();
+            int i = r.nextInt(classList.size());
+            Intent intent = new Intent(TypingTaskActivity.this, classList.get(i));
+            classList.remove(i);
+
+            intent.putExtra("activity", classList);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(TypingTaskActivity.this, "List Empty", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

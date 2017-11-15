@@ -4,7 +4,9 @@ package com.example.zsarsenbayev.typeme;
  * Created by zsarsenbayev on 11/14/17.
  */
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,6 +17,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,6 +29,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * TODO: document your custom view class.
  */
@@ -35,6 +40,8 @@ public class MyView extends View {
     ArrayList<Point> points = new ArrayList<>();
     private int pointsPos; //Which point we will be drawing
 
+    ArrayList<Class<?>> classList;
+
     public float radius;
     public float width;
     public float height;
@@ -43,7 +50,7 @@ public class MyView extends View {
 
     SharedPreferences prefs;
     String participantCode, genderCode, conditionCode, blockCode;
-
+    SharedPreferences.Editor editor;
 
     String hitCircle;
 
@@ -59,19 +66,20 @@ public class MyView extends View {
 
     Long startTime, endTime, diff;
 
-    // camilo said to use shared preferences to keep pointspos?
 
     public MyView(Context context) {
         super(context);
 
-        prefs = context.getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(MainActivity.MyPREFERENCES, MODE_PRIVATE);
+        editor = context.getSharedPreferences(MainActivity.MyPREFERENCES, MODE_PRIVATE).edit();
         init();
     }
 
     public MyView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        prefs = context.getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(MainActivity.MyPREFERENCES, MODE_PRIVATE);
+        editor = context.getSharedPreferences(MainActivity.MyPREFERENCES, MODE_PRIVATE).edit();
         //prefs = PreferenceManager.getDefaultSharedPreferences(context);
         init();
     }
@@ -79,7 +87,8 @@ public class MyView extends View {
     public MyView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        prefs = context.getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        prefs = context.getSharedPreferences(MainActivity.MyPREFERENCES, MODE_PRIVATE);
+        editor = context.getSharedPreferences(MainActivity.MyPREFERENCES, MODE_PRIVATE).edit();
         init();
     }
 
@@ -103,6 +112,12 @@ public class MyView extends View {
         genderCode = prefs.getString("genderCode", "");
         conditionCode = prefs.getString("conditionCode", "");
         blockCode = prefs.getString("blockCode", "");
+
+        classList = new ArrayList<Class<?>>();
+        ArrayList test = ((Activity)getContext()).getIntent().getParcelableArrayListExtra("activity");
+        for(int i = 0; i < test.size(); i++){
+            classList.add((Class<?>)test.get(i));
+        }
 
         File dataDirectory = new File(Environment.getExternalStorageDirectory() +
                 WORKING_DIRECTORY);
@@ -160,9 +175,6 @@ public class MyView extends View {
         touchY = event.getY();
 
         switch (event.getAction()) {
-//            case MotionEvent.ACTION_DOWN: {
-//                break;
-//            }
 
             case MotionEvent.ACTION_UP:
                 //Check if the point press is within the circle
@@ -190,8 +202,6 @@ public class MyView extends View {
                     stringBuilder.delete(0, stringBuilder.length());
 
                     if (positions.size() == points.size()) {
-                        // start another view with bigger circles
-//                        Toast.makeText(this.getContext(), "positions full", Toast.LENGTH_SHORT).show();
                         if (!drawbigcircles) {
                             drawbigcircles = true;
                             populateBigCirclesArrayList();
@@ -326,9 +336,20 @@ public class MyView extends View {
 
     }
 
-    private void finishActivity()
-    {
-        System.exit(0);
+    private void finishActivity() {
+
+        if(classList.size()!=0) {
+            Random r = new Random();
+            int i = r.nextInt(classList.size());
+            Intent intent  = new Intent(this.getContext(), classList.get(i));
+            classList.remove(i);
+
+            intent.putExtra("activity", classList);
+            getContext().startActivity(intent);
+        }else{
+//            Toast.makeText(this.getContext(), "List Empty", Toast.LENGTH_SHORT).show();
+            ((Activity)this.getContext()).finish();
+        }
     }
 
 }

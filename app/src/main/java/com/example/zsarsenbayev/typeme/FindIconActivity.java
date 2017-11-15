@@ -34,6 +34,7 @@ public class FindIconActivity extends AppCompatActivity {
     int posToFind;
     String iconName;
     TextView iconNameTextView, findIconText;
+    ArrayList<Class<?>> classList;
 
     public static HashMap<CellContent, Integer> iconsMap = new HashMap<>();
 
@@ -45,10 +46,16 @@ public class FindIconActivity extends AppCompatActivity {
         setContentView(R.layout.activity_find_icon);
         populateArrayList();
         SharedPreferences prefs = getSharedPreferences(DisplayGridActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+
+        classList = new ArrayList<Class<?>>();
+        ArrayList test = getIntent().getParcelableArrayListExtra("activity");
+
+        for(int i = 0; i < test.size(); i++){
+            classList.add((Class<?>)test.get(i));
+        }
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("FIRSTTIME", true);
         editor.commit();
-
         requestPermissions();
     }
 
@@ -69,8 +76,6 @@ public class FindIconActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(DisplayGridActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         if (iconsMap.isEmpty() && !prefs.getBoolean("FIRSTTIME", true)) {
-//            Intent intentSensorService = new Intent(this, SensorsService.class);
-//            stopService(intentSensorService);
             finish();
         } else {
             initializeHash();
@@ -103,13 +108,13 @@ public class FindIconActivity extends AppCompatActivity {
 
                     endTime = System.currentTimeMillis();
                     diff = endTime-startTime;
-
                     //WITHOUT BLANK SCREEN
                     Intent intent = new Intent(getBaseContext(), DisplayGridActivity.class);
                     intent.putExtra("iconToFind", iconToFind);
                     intent.putExtra("positionToPlace", posToFind);
                     intent.putExtra("iconName", iconName);
                     intent.putExtra("timeToRemember", diff);
+                    intent.putExtra("activity", classList);
                     startActivity(intent);
 
                     Log.d("timeToRemember", ""+diff);
@@ -166,19 +171,13 @@ public class FindIconActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-//                    Intent intentSensorService = new Intent(this, SensorsService.class);
-//                    startService(intentSensorService);
 
                 } else {
                     requestPermissions();
@@ -187,8 +186,6 @@ public class FindIconActivity extends AppCompatActivity {
                 return;
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 

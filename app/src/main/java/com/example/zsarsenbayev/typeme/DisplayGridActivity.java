@@ -1,6 +1,7 @@
 package com.example.zsarsenbayev.typeme;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class DisplayGridActivity extends AppCompatActivity {
 
@@ -35,11 +37,14 @@ public class DisplayGridActivity extends AppCompatActivity {
     BufferedWriter bufferedWriter;
     StringBuilder stringBuilder;
 
+
     SharedPreferences prefs;
     String participantCode, genderCode, conditionCode, blockCode;
 
     GridView gridView;
     GridViewCustomAdapter gridViewCustomAdapter;
+
+    ArrayList<Class<?>> classList;
 
     FindIconActivity.CellContent passedIcon;
     ArrayList<FindIconActivity.CellContent> iconsCopy = new ArrayList<FindIconActivity.CellContent>(FindIconActivity.icons);
@@ -54,13 +59,17 @@ public class DisplayGridActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        classList = new ArrayList<Class<?>>();
+        ArrayList test = getIntent().getParcelableArrayListExtra("activity");
+
+        for(int i = 0; i < test.size(); i++){
+            classList.add((Class<?>)test.get(i));
+        }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-
-
         setContentView(R.layout.activity_display_grid);
 
         Bundle extras = getIntent().getExtras();
@@ -220,21 +229,14 @@ public class DisplayGridActivity extends AppCompatActivity {
                         Log.e("MYDEBUG", "ERROR WRITING TO DATA FILES: e = " + e);
                     }
                     stringBuilder.delete(0, stringBuilder.length());
-                    finish();
+                    finishActivity();
                 } else {
                     counter++;
                     stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%d,%d,%s,%s,#1,#2,#3,#4,%f,%f,#5,#6,#7,#8,%d,false\n", ts, date, participantCode,
                             genderCode, conditionCode, blockCode, diff.toString(),timeToRemember.toString(), passedPosition, position, passedIcon.getDrawableID(),
                             passedIcon.getName(), touchX, touchY,counter));
                     errorRows.add(stringBuilder.toString());
-//                    try {
-//                        bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());
-//                        bufferedWriter.flush();
-//                    } catch (IOException e) {
-//                        Log.e("MYDEBUG", "ERROR WRITING TO DATA FILES: e = " + e);
-//                    }
                     stringBuilder.delete(0, stringBuilder.length());
-//                    Toast.makeText(getApplicationContext(), "Incorrect", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -249,5 +251,21 @@ public class DisplayGridActivity extends AppCompatActivity {
             Log.e("MYDEBUG", "ERROR CLOSING THE DATA FILES: e = " + e);
         }
         finish();
+    }
+
+    public void finishActivity(){
+
+        if(classList.size()!=0) {
+            Random r = new Random();
+            int i = r.nextInt(classList.size());
+            Intent intent = new Intent(DisplayGridActivity.this, classList.get(i));
+            classList.remove(i);
+
+            intent.putExtra("activity", classList);
+            startActivity(intent);
+        }else{
+            finish();
+        }
+
     }
 }
