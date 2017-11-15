@@ -20,7 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".TypingTaskActivity" />
-        <activity android:name=".CirclesActivity"></activity>
+        <activity android:name=".CirclesActivity" />
+        <activity android:name=".FindIconActivity" />
+        <activity android:name=".DisplayGridActivity"></activity>
     </application>
 
 </manifest>

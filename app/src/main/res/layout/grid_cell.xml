@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:src="@drawable/instagram"
+        android:scaleType="centerInside"
+        android:layout_gravity="center_horizontal">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/textView"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:layout_width="65dp"
+        android:layout_height="16dp"
+        android:gravity="center"
+        android:layout_marginTop="1dp"
+        android:textSize="12sp"
+        android:layout_gravity="center_horizontal">
+    </TextView>
+
+
+</LinearLayout>

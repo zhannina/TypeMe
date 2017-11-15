@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private Button saveButton;
     private Button exitButton;
 
-    private Spinner spinParticipant, spinGender, spinCondition, spinSubCondition, spinBlock;
+    private Spinner spinParticipant, spinGender, spinCondition, spinBlock;
 
     private String[] participantCode = {"P01", "P02", "P03", "P04", "P05", "P06", "P07", "P08",
           "P09", "P10", "P11", "P12", "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20",
@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putBoolean("HEADERS", false);
         editor.commit();
 //        Intent i = new Intent(MainActivity.this, TypingTaskActivity.class);
-        Intent i = new Intent(MainActivity.this, CirclesActivity.class);
+//        Intent i = new Intent(MainActivity.this, CirclesActivity.class);
+        Intent i = new Intent(MainActivity.this, FindIconActivity.class);
         startActivity(i);
     }
 
