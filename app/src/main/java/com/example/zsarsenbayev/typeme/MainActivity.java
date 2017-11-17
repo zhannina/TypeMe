@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed()
     {
         // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
-        moveTaskToBack(true);
+//        moveTaskToBack(true);
+        Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
     }
 }

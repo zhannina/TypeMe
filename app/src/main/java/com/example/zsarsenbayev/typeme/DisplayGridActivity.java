@@ -245,8 +245,9 @@ public class DisplayGridActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
+        Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
         // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
-        moveTaskToBack(true);
+//        moveTaskToBack(true);
     }
 
 }
