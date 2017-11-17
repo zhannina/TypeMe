@@ -331,5 +331,6 @@ public class TypingTaskActivity extends AppCompatActivity {
     public void onBackPressed()
     {
         // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
+        moveTaskToBack(true);
     }
 }
