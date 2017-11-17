@@ -81,7 +81,12 @@ public class TypingTaskActivity extends AppCompatActivity {
             "Sarah and Jessie are going swimming",
             "The frog jumped and landed in the pond",
             "Can I have some juice to drink?",
-            "The pizza smells delicious"));
+            "The pizza smells delicious",
+            "There is a fly in the car with us.",
+            "Look on top of the refrigerator for the key.",
+            "I am out of paper for the printer.",
+            "Will you help me with the math homework?",
+            "The music is too loud for my ears."));
 
 //    private ArrayList<String> mediumSentences = new ArrayList<String>(Arrays.asList("Whatever you are, be a good one",
 //            "Be the change you wish to see in the world",
@@ -90,11 +95,16 @@ public class TypingTaskActivity extends AppCompatActivity {
 //            "Believe you can and you're halfway there"));
 
     private ArrayList<String> difficultSentences = new ArrayList<String>(Arrays.asList(
+            "Since saucy jacks so happy are in this, Give them thy fingers, me thy lips to kiss",
+            "Make thee another self, for love of me, That beauty still may live in thine or thee",
             "Or else of thee this I prognosticate: Thy end is truth's and beauty's doom and date",
             "Yet, do thy worst, old Time: despite thy wrong, My love shall in my verse ever live young",
             "O, learn to read what silent love hath writ: To hear with eyes belongs to love's fine wit",
             "But day doth daily draw my sorrows longer And night doth nightly make grief's strength seem stronger",
-            "Yet him for this my love no whit disdaineth; Suns of the world may stain when heaven's sun staineth"));
+            "Yet him for this my love no whit disdaineth; Suns of the world may stain when heaven's sun staineth",
+            "Ah! but those tears are pearl which thy love sheds, And they are rich and ransom all ill deeds",
+            "But why thy odour matcheth not thy show, The solve is this, that thou dost common grow",
+            "And thou in this shalt find thy monument, When tyrants' crests and tombs of brass are spent"));
 //    private int myRandomNumber;
 
 
@@ -315,5 +325,11 @@ public class TypingTaskActivity extends AppCompatActivity {
             finish();
         }
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
     }
 }

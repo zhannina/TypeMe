@@ -259,4 +259,10 @@ public class FindIconActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
+    }
 }
