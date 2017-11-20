@@ -119,8 +119,12 @@ public class MainActivity extends AppCompatActivity {
 
         Random r = new Random();
         randomNumber = r.nextInt(activities.size());
-        Intent intent  = new Intent(MainActivity.this, activities.get(randomNumber));
-        activities.remove(randomNumber);
+//        Intent intent  = new Intent(MainActivity.this, activities.get(randomNumber));
+//        activities.remove(randomNumber);
+//        intent.putExtra("activity", activities);
+//        startActivity(intent);
+
+        Intent intent = new Intent(MainActivity.this, TypingTaskActivity.class);
         intent.putExtra("activity", activities);
         startActivity(intent);
     }
@@ -141,4 +145,5 @@ public class MainActivity extends AppCompatActivity {
 //        moveTaskToBack(true);
         Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
     }
+
 }

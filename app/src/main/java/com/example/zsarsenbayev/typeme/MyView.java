@@ -133,11 +133,11 @@ public class MyView extends View {
 
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(file, true));
-            if (!prefs.getBoolean("HEADERS", false) && blockCode.equals("B01")) {
+            if (prefs.getBoolean("CIRCLEHEADERS", false)) {
                 bufferedWriter.append(HEADER, 0, HEADER.length());
                 bufferedWriter.flush();
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("HEADERS", true);
+                editor.putBoolean("CIRCLEHEADERS", true);
                 editor.commit();
             }
 

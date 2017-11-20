@@ -102,11 +102,11 @@ public class DisplayGridActivity extends AppCompatActivity {
         try {
 
             bufferedWriter = new BufferedWriter(new FileWriter(file, true));
-            if (!prefs.getBoolean("HEADERS", false) && blockCode.equals("B01")) {
+            if (prefs.getBoolean("ICONSHEADERS", false)) {
                 bufferedWriter.append(HEADER, 0, HEADER.length());
                 bufferedWriter.flush();
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("HEADERS", true);
+                editor.putBoolean("ICONSHEADERS", true);
                 editor.commit();
             }
 
@@ -249,5 +249,13 @@ public class DisplayGridActivity extends AppCompatActivity {
         // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
 //        moveTaskToBack(true);
     }
+
+//    @Override
+//    protected void onUserLeaveHint()
+//    {
+//        Toast.makeText(this, "Please do not press HOME button", Toast.LENGTH_SHORT).show();
+////        Log.d("onUserLeaveHint","Home button pressed");
+////        super.onUserLeaveHint();
+//    }
 
 }

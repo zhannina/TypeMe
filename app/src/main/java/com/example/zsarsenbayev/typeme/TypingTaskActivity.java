@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
+import java.util.StringJoiner;
 
 public class TypingTaskActivity extends AppCompatActivity {
 
@@ -47,7 +46,7 @@ public class TypingTaskActivity extends AppCompatActivity {
     private long endTimeStamp;
     private String endTimeStampStr = "";
 
-    private String userInputString = "";
+    private String userInputString;
 
     private String completeOldText;
     private String completeNewText;
@@ -58,13 +57,19 @@ public class TypingTaskActivity extends AppCompatActivity {
     private ArrayList<String> tempSimpleSentences;
     private ArrayList<String> tempDifficSentences;
 
-    private int numberOfCorrectedLetters = 0;
+    private String oldTextsString;
+    private String newTextsString;
+    private String userInputStr;
+    private String correctedLettersString;
+    private String textViewString;
+
+    private int numberOfTotalEnteredLetters = 0;
 
     ArrayList<Class<?>> classList;
 
     public static final String WORKING_DIRECTORY = "/TypeMeData/";
     final String HEADER = "Date, Participant, Gender, Condition, Block, " +
-            "StartTimeStamp, EndTimeStamp, TimeToType(ms), DisplayedMessage, BackspaceCount, UserInputMessage, Difficulty, TextBeforeChange, TextAfterChange, CorrectedLettersArray, NumberOfCorrectedLetters\n";
+            "StartTimeStamp, EndTimeStamp, TimeToType(ms), DisplayedMessage, BackspaceCount, NumberOfTotalEnteredKeyStrokes, Difficulty, UserInputMessage, TextBeforeChange, TextAfterChange, CorrectedLettersArray\n";
 
     private File file;
     private BufferedWriter bufferedWriter;
@@ -77,11 +82,11 @@ public class TypingTaskActivity extends AppCompatActivity {
     InputMethodManager imm;
 
     private ArrayList<String> simpleSentences = new ArrayList<String>(Arrays.asList(
-            "Joe went to the store",
-            "Sarah and Jessie are going swimming",
-            "The frog jumped and landed in the pond",
+            "Joe went to the store.",
+            "Sarah and Jessie are going swimming.",
+            "The frog jumped and landed in the pond.",
             "Can I have some juice to drink?",
-            "The pizza smells delicious",
+            "The pizza smells delicious.",
             "There is a fly in the car with us.",
             "Look on top of the refrigerator for the key.",
             "I am out of paper for the printer.",
@@ -95,16 +100,16 @@ public class TypingTaskActivity extends AppCompatActivity {
 //            "Believe you can and you're halfway there"));
 
     private ArrayList<String> difficultSentences = new ArrayList<String>(Arrays.asList(
-            "Since saucy jacks so happy are in this, Give them thy fingers, me thy lips to kiss",
-            "Make thee another self, for love of me, That beauty still may live in thine or thee",
-            "Or else of thee this I prognosticate: Thy end is truth's and beauty's doom and date",
-            "Yet, do thy worst, old Time: despite thy wrong, My love shall in my verse ever live young",
-            "O, learn to read what silent love hath writ: To hear with eyes belongs to love's fine wit",
-            "But day doth daily draw my sorrows longer And night doth nightly make grief's strength seem stronger",
-            "Yet him for this my love no whit disdaineth; Suns of the world may stain when heaven's sun staineth",
-            "Ah! but those tears are pearl which thy love sheds, And they are rich and ransom all ill deeds",
-            "But why thy odour matcheth not thy show, The solve is this, that thou dost common grow",
-            "And thou in this shalt find thy monument, When tyrants' crests and tombs of brass are spent"));
+            "Since saucy jacks so happy are in this Give them thy fingers me thy lips to kiss.",
+            "Make thee another self for love of me That beauty still may live in thine or thee.",
+            "Or else of thee this I prognosticate Thy end is truth's and beauty's doom and date.",
+            "Yet do thy worst old Time despite thy wrong My love shall in my verse ever live young.",
+            "O learn to read what silent love hath writ To hear with eyes belongs to love's fine wit.",
+            "But day doth daily draw my sorrows longer And night doth nightly make grief's strength seem stronger.",
+            "Yet him for this my love no whit disdaineth Suns of the world may stain when heaven's sun staineth.",
+            "Ah but those tears are pearl which thy love sheds And they are rich and ransom all ill deeds.",
+            "But why thy odour matcheth not thy show The solve is this that thou dost common grow.",
+            "And thou in this shalt find thy monument When tyrants' crests and tombs of brass are spent."));
 //    private int myRandomNumber;
 
 
@@ -166,11 +171,11 @@ public class TypingTaskActivity extends AppCompatActivity {
 
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(file, true));
-            if (!prefs.getBoolean("HEADERS", false) && blockCode.equals("B01")) {
+            if (prefs.getBoolean("TYPEHEADERS", false)) {
                 bufferedWriter.append(HEADER, 0, HEADER.length());
                 bufferedWriter.flush();
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("HEADERS", true);
+                editor.putBoolean("TYPEHEADERS", true);
                 editor.commit();
             }
 
@@ -195,7 +200,7 @@ public class TypingTaskActivity extends AppCompatActivity {
             public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
                 if (keyEvent.getAction()==KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_DEL) {
                     backSpaceCount = backSpaceCount + 1;
-                    Log.d("BACK", "key pressed");
+                    Log.d("BACK",  backSpaceCount + " times key pressed");
                 }
                 return false;
             }
@@ -209,21 +214,33 @@ public class TypingTaskActivity extends AppCompatActivity {
                 startUpdates();
 
                 oldTexts.add(completeOldText);
-                Log.d("String BEFORE", before);
-                Log.d("String OLD", old);
-                Log.d("String NEW", aNew);
-                Log.d("String AFTER", after);
-                if (old.equals("")){
-                    old.equals("00");
-                }
                 newTexts.add(completeNewText);
                 correctedLetters.add(old);
-                numberOfCorrectedLetters++;
+                numberOfTotalEnteredLetters++;
                 Log.d("STRING NEW", newTexts+"");
+                Log.d("CorrectedLetters", numberOfTotalEnteredLetters +"");
+
+                StringJoiner joiner = new StringJoiner(";");
+                for (String s: oldTexts){
+                    joiner.add(s);
+                }
+                oldTextsString = joiner.toString();
+
+                StringJoiner joiner1 = new StringJoiner(";");
+                for (String s: newTexts){
+                    joiner1.add(s);
+                }
+                newTextsString = joiner1.toString();
+
+                StringJoiner joiner2 = new StringJoiner(";");
+                for (String s: correctedLetters){
+                    joiner2.add(s);
+                }
+                correctedLettersString = joiner2.toString();
+
                 endUpdates();
             }
         });
-
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -235,18 +252,11 @@ public class TypingTaskActivity extends AppCompatActivity {
                 Log.d("TIME end: ", "" + endTimeStamp);
                 Log.d("timeMillis: ", "" + timeMillis);
                 userInputString = userInputEditText.getText().toString();
-                if (count < 4) {
-                    setMessage();
-                } else{
-                    finishActivity();
-                }
-                Log.d("BACK", "" + backSpaceCount);
+                textViewString = messageTextView.getText().toString();
 
-                Log.d("STRING OLD", oldTexts+"");
-                Log.d("STRING NEW", newTexts+"");
-
-                stringBuilder.append(String.format("%s, %s, %s, %s, %s, %s, %s, %d, %s, %d, %s, %s, %s, %s, %s, %d\n", date, participantCode,
-                        genderCode, conditionCode, blockCode, startTimeStampStr, endTimeStampStr, timeMillis, displayedSentence, backSpaceCount, userInputString, difficulty, oldTexts, newTexts, correctedLetters, numberOfCorrectedLetters));
+                Log.d("DIFF: 3 ", difficulty);
+                stringBuilder.append(String.format("%s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %d, %s, %s, %s, %s, %s\n", date, participantCode,
+                        genderCode, conditionCode, blockCode, startTimeStampStr, endTimeStampStr, String.valueOf(timeMillis), textViewString, backSpaceCount, numberOfTotalEnteredLetters, difficulty, userInputString, oldTextsString, newTextsString, correctedLettersString));
 
                 try {
                     bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());
@@ -257,24 +267,40 @@ public class TypingTaskActivity extends AppCompatActivity {
                 stringBuilder.delete(0, stringBuilder.length());
 
                 //resetting the values
-                backSpaceCount = 0;
-                numberOfCorrectedLetters = 0;
-                oldTexts.clear();
-                newTexts.clear();
-                correctedLetters.clear();
                 userInputEditText.setCursorVisible(false);
                 userInputEditText.setText("");
                 imm.hideSoftInputFromWindow(userInputEditText.getWindowToken(), 0);
+                resetValues();
             }
         });
+    }
+
+
+    private void resetValues(){
+
+        numberOfTotalEnteredLetters = 0;
+        backSpaceCount = 0;
+        oldTexts.clear();
+        newTexts.clear();
+        correctedLetters.clear();
+        oldTextsString = "";
+        newTextsString = "";
+        userInputString = "";
+
+        if (count < 2) {
+            setMessage();
+        } else{
+            finishActivity();
+        }
     }
 
     private void setMessage() {
         Random r = new Random(System.nanoTime());
         int i = r.nextInt(tempSimpleSentences.size());
 
-        Log.d("RANDOM", ""+i);
+//        numberOfTotalEnteredLetters = 0;
 
+        Log.d("RANDOM", ""+i);
         if (mode == 1){
             displayedSentence = tempSimpleSentences.get(i);
             Log.d("DisplaySentence: ", displayedSentence);
@@ -283,7 +309,8 @@ public class TypingTaskActivity extends AppCompatActivity {
             difficulty = "easy";
             count++;
             tempSimpleSentences.remove(i);
-            Log.d("TEMP",tempSimpleSentences+"");
+            Log.d("MODE", mode+"");
+            Log.d("DIFF: 1 ", difficulty);
         } else if (mode == 2){
             displayedSentence = tempDifficSentences.get(i);
             Log.d("DisplaySentence: ", displayedSentence);
@@ -292,8 +319,11 @@ public class TypingTaskActivity extends AppCompatActivity {
             difficulty = "difficult";
             count++;
             tempDifficSentences.remove(i);
-            Log.d("TEMP",tempDifficSentences+"");
+            Log.d("MODE", mode+"");
+            Log.d("DIFF: 2 ", difficulty);
         }
+
+
 
     }
 
@@ -330,8 +360,7 @@ public class TypingTaskActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-        // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
-//        moveTaskToBack(true);
         Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
     }
+
 }
