@@ -73,7 +73,7 @@ public class DisplayGridActivity extends AppCompatActivity {
         startTime = System.currentTimeMillis();
         errorRows = new ArrayList<>();
 
-        prefs = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        prefs = getSharedPreferences(MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         participantCode = prefs.getString("participantCode", "");
         genderCode = prefs.getString("genderCode", "");
         conditionCode = prefs.getString("conditionCode", "");
@@ -102,12 +102,12 @@ public class DisplayGridActivity extends AppCompatActivity {
         try {
 
             bufferedWriter = new BufferedWriter(new FileWriter(file, true));
-            if (prefs.getBoolean("ICONSHEADERS", false)) {
+            if (prefs.getBoolean("FIRSTTIME", true)) {
                 bufferedWriter.append(HEADER, 0, HEADER.length());
                 bufferedWriter.flush();
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("ICONSHEADERS", true);
-                editor.commit();
+//                SharedPreferences.Editor editor = prefs.edit();
+//                editor.putBoolean("ICONSHEADERS", true);
+//                editor.commit();
             }
 
         } catch (IOException e) {

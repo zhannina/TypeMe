@@ -48,9 +48,9 @@ public class IconsSensorsService extends Service implements SensorEventListener 
         super.onCreate();
 
         File dataDirectory = new File(Environment.getExternalStorageDirectory() +
-                MyView.WORKING_DIRECTORY);
+                DisplayGridActivity.WORKING_DIRECTORY);
         if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
-            Log.e("MYDEBUG", "Failed to create directory: " + MyView.WORKING_DIRECTORY);
+            Log.e("MYDEBUG", "Failed to create directory: " + DisplayGridActivity.WORKING_DIRECTORY);
             Toast.makeText(this, "Couldn't create directory", Toast.LENGTH_SHORT).show();
             System.exit(0);
         }

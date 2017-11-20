@@ -50,7 +50,7 @@ public class TypingSensorsService extends Service implements SensorEventListener
         File dataDirectory = new File(Environment.getExternalStorageDirectory() +
                 MyView.WORKING_DIRECTORY);
         if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
-            Log.e("MYDEBUG", "Failed to create directory: " + MyView.WORKING_DIRECTORY);
+            Log.e("MYDEBUG", "Failed to create directory: " + TypingTaskActivity.WORKING_DIRECTORY);
             Toast.makeText(this, "Couldn't create directory", Toast.LENGTH_SHORT).show();
             System.exit(0);
         }

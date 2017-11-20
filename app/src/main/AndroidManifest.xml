@@ -23,6 +23,25 @@
         <activity android:name=".CirclesActivity" />
         <activity android:name=".FindIconActivity" />
         <activity android:name=".DisplayGridActivity"></activity>
+
+        <service android:name=".IconsSensorsService"
+            android:enabled="true"
+            android:label="IconsSensorsService"/>
+        <receiver android:name=".IconsSensorsService$BatteryReceiver"
+            android:enabled="true"/>
+
+        <service android:name=".CirclesSensorsService"
+            android:enabled="true"
+            android:label="CirclesSensorsService"/>
+        <receiver android:name=".CirclesSensorsService$BatteryReceiver"
+            android:enabled="true"/>
+
+        <service android:name=".TypingSensorsService"
+            android:enabled="true"
+            android:label="TypingSensorsService"/>
+        <receiver android:name=".TypingSensorsService$BatteryReceiver"
+            android:enabled="true"/>
+
     </application>
 
 </manifest>
