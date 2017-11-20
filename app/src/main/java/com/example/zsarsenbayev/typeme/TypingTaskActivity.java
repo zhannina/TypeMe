@@ -358,8 +358,7 @@ public class TypingTaskActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
     }
 
