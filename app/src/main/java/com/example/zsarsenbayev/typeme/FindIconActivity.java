@@ -51,6 +51,9 @@ public class FindIconActivity extends AppCompatActivity {
         editor.putBoolean("FIRSTTIME", true);
         editor.commit();
         requestPermissions();
+
+        Intent intentSensorService = new Intent(this, IconsSensorsService.class);
+        startService(intentSensorService);
     }
 
     @Override

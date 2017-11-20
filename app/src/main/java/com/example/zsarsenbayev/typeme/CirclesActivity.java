@@ -19,6 +19,9 @@ public class CirclesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(new MyView(this));
+
+        Intent intentSensorService = new Intent(this, CirclesSensorsService.class);
+        startService(intentSensorService);
     }
 
     @Override

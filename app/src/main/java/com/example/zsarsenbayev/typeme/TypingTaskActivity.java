@@ -123,6 +123,9 @@ public class TypingTaskActivity extends AppCompatActivity {
             classList.add((Class<?>)test.get(i));
         }
 
+        Intent intentSensorService = new Intent(this, TypingSensorsService.class);
+        startService(intentSensorService);
+
     }
 
     @Override
