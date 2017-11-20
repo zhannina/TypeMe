@@ -243,19 +243,9 @@ public class DisplayGridActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
-        // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
-//        moveTaskToBack(true);
     }
 
-//    @Override
-//    protected void onUserLeaveHint()
-//    {
-//        Toast.makeText(this, "Please do not press HOME button", Toast.LENGTH_SHORT).show();
-////        Log.d("onUserLeaveHint","Home button pressed");
-////        super.onUserLeaveHint();
-//    }
 
 }

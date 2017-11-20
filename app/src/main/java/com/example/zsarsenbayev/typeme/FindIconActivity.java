@@ -261,18 +261,8 @@ public class FindIconActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
-        // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
-//        moveTaskToBack(true);
+    public void onBackPressed() {
         Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
     }
 
-//    @Override
-//    protected void onUserLeaveHint()
-//    {
-//        Toast.makeText(this, "Please do not press HOME button", Toast.LENGTH_SHORT).show();
-////        Log.d("onUserLeaveHint","Home button pressed");
-////        super.onUserLeaveHint();
-//    }
 }

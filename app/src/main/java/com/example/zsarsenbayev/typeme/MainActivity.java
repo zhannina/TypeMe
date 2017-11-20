@@ -119,12 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
         Random r = new Random();
         randomNumber = r.nextInt(activities.size());
-//        Intent intent  = new Intent(MainActivity.this, activities.get(randomNumber));
-//        activities.remove(randomNumber);
-//        intent.putExtra("activity", activities);
-//        startActivity(intent);
-
-        Intent intent = new Intent(MainActivity.this, TypingTaskActivity.class);
+        Intent intent  = new Intent(MainActivity.this, activities.get(randomNumber));
+        activities.remove(randomNumber);
         intent.putExtra("activity", activities);
         startActivity(intent);
     }
@@ -139,10 +135,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
-        // super.onBackPressed(); // Comment this super call to avoid calling finish() or fragmentmanager's backstack pop operation.
-//        moveTaskToBack(true);
+    public void onBackPressed() {
         Toast.makeText(this, "Please do not press the back button", Toast.LENGTH_SHORT).show();
     }
 
