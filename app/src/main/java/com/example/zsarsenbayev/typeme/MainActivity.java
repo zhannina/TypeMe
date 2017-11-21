@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
           "P21", "P22", "P23", "P24", "P25", "P26", "P27", "P28", "P29", "P30", "P31", "P32",
             "P33", "P34", "P35", "P36", "P37", "P38", "P39", "P40", "P41", "P42", "P43", "P44",
             "P45", "P46", "P47", "P48", "P99"};
-    private String[] genderCode = {"M", "F"};
+    private String[] genderCode = {"M", "F", "NA"};
     private String[] conditionCode = {"Music-Fast", "Music-Slow", "Urban-Indoor", "Urban-Outdoor", "Speech-English", "Speech-Foreign", "Silent", "Training"};
     private String[] blockCode = {"B01"};
 
@@ -82,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapterB = new ArrayAdapter<CharSequence>(this, R.layout.spinnerstyle, blockCode);
         spinBlock.setAdapter(adapterB);
 
+        getDisplayContentSize();
+
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +131,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void clickExit() {
         this.finish(); // terminate
+    }
+
+    public void getDisplayContentSize(){
+        float result;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        result = getResources().getDimensionPixelSize(resourceId);
+
+        Display mdisp = getWindowManager().getDefaultDisplay();
+        Point mdispSize = new Point();
+        mdisp.getSize(mdispSize);
+        float maxX = mdispSize.x;
+        float maxY = mdispSize.y-result;
+        sharedPrefs = getApplicationContext().getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = getSharedPreferences(MyPREFERENCES, MODE_PRIVATE).edit();
+        editor.putFloat("maxX", maxX);
+        editor.putFloat("maxY", maxY);
+
+        editor.commit();
     }
 
     @Override
