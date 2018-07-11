@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -165,6 +167,7 @@ public class TypingTaskActivity extends AppCompatActivity {
         setMessage();
 
         File dataDirectory = new File(this.getExternalFilesDir(null), WORKING_DIRECTORY);
+//        File dataDirectory = new File(this.getExternalFilesDir(null) + WORKING_DIRECTORY;
         if( ! dataDirectory.exists() ) { // create directory if not exist
             dataDirectory.mkdirs();
         }
@@ -210,6 +213,7 @@ public class TypingTaskActivity extends AppCompatActivity {
         });
 
         userInputEditText.addTextChangedListener(new EditTextListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             protected void onTextChanged(String before, String old, String aNew, String after) {
                 completeOldText = before + old + after;

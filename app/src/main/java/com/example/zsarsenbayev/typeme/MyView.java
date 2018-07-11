@@ -119,8 +119,10 @@ public class MyView extends View {
             classList.add((Class<?>)test.get(i));
         }
 
-        File dataDirectory = new File(Environment.getExternalStorageDirectory() +
-                WORKING_DIRECTORY);
+//        File dataDirectory = new File(Environment.getExternalStorageDirectory() +
+//                WORKING_DIRECTORY);
+
+        File dataDirectory = new File(getContext().getExternalFilesDir(null), WORKING_DIRECTORY);
         if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
             Log.e("MYDEBUG", "Error creating data directory! Exception: " + WORKING_DIRECTORY);
             finishActivity();

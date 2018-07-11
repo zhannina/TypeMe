@@ -47,8 +47,14 @@ public class CirclesSensorsService extends Service implements SensorEventListene
     public void onCreate() {
         super.onCreate();
 
-        File dataDirectory = new File(Environment.getExternalStorageDirectory() +
-                MyView.WORKING_DIRECTORY);
+        File dataDirectory = new File(this.getExternalFilesDir(null), MyView.WORKING_DIRECTORY);
+
+//        File dataDirectory = new File(this.getExternalFilesDir(null) +
+//                MyView.WORKING_DIRECTORY);
+
+//        File dataDirectory = new File(Environment.getExternalStorageDirectory() +
+//                MyView.WORKING_DIRECTORY);
+
         if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
             Log.e("MYDEBUG", "Failed to create directory: " + MyView.WORKING_DIRECTORY);
             Toast.makeText(this, "Couldn't create directory", Toast.LENGTH_SHORT).show();

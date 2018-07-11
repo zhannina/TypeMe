@@ -86,8 +86,10 @@ public class DisplayGridActivity extends AppCompatActivity {
         // Set the Adapter to GridView
         gridView.setAdapter(gridViewCustomAdapter);
 
-        File dataDirectory = new File(Environment.getExternalStorageDirectory() +
-                WORKING_DIRECTORY);
+//        File dataDirectory = new File(Environment.getExternalStorageDirectory() +
+//        File dataDirectory = new File(this.getExternalFilesDir(null) +
+//                WORKING_DIRECTORY);
+        File dataDirectory = new File(this.getExternalFilesDir(null), WORKING_DIRECTORY);
         if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
             Log.e("MYDEBUG", "Failed to create directory: " + WORKING_DIRECTORY);
             Toast.makeText(this, "Couldn't create directory", Toast.LENGTH_SHORT).show();
