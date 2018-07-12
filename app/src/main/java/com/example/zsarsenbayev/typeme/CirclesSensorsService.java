@@ -35,6 +35,7 @@ public class CirclesSensorsService extends Service implements SensorEventListene
 
     private SensorManager sm = null;
     private Sensor mAccelerometer;
+    private Sensor mGyro;
 
     private BufferedWriter bufferedWriter;
     private StringBuilder stringBuilder;
@@ -71,7 +72,7 @@ public class CirclesSensorsService extends Service implements SensorEventListene
         String genderCode = prefs.getString("genderCode", "");
         String conditionCode = prefs.getString("conditionCode", "");
 
-        String base = "HEATMAP-" + participantCode + "-" +
+        String base = "CIRCLES-" + participantCode + "-" +
                 genderCode + "-" + conditionCode;
 
         accFile = new File(dataDirectory, base+"-accelerometer.csv");
@@ -108,10 +109,12 @@ public class CirclesSensorsService extends Service implements SensorEventListene
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
         if (sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION) != null){
             mAccelerometer = sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
             sm.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         }
+
     }
 
     @Nullable
@@ -122,12 +125,10 @@ public class CirclesSensorsService extends Service implements SensorEventListene
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
         float accX = event.values[0];
         float accY = event.values[1];
         float accZ = event.values[2];
 
-//        Log.d("TAG","ACC: " + accX + " - " + accY + " - " + accZ);
 
         String ts = String.valueOf(System.currentTimeMillis());
 

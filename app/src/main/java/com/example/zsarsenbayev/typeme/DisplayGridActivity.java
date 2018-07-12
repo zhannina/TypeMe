@@ -24,7 +24,7 @@ import java.util.Random;
 
 public class DisplayGridActivity extends AppCompatActivity {
 
-    public static final String WORKING_DIRECTORY = "/FindWaldoData/";
+    public static final String WORKING_DIRECTORY = "/IconsData/";
     final String HEADER = "TimeStamp,Date,Participant,Gender,Condition,Block,"
             + "Time(ms),TimeToRemember(ms)," +
             "ActualGridPosition,SelectedGridPosition,PassedDrawableID,PassedIconName,StartViewTouchX,StartViewTouchY,ViewCenterX,ViewCenterY,TouchX,TouchY," +
@@ -96,7 +96,7 @@ public class DisplayGridActivity extends AppCompatActivity {
             System.exit(0);
         }
 
-        String base = "FindWaldo-" + participantCode + "-" +
+        String base = "Icons-" + participantCode + "-" +
                 genderCode + "-" + conditionCode;
 
         file = new File(dataDirectory, base + ".csv");

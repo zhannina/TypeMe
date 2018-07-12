@@ -47,8 +47,7 @@ public class TypingSensorsService extends Service implements SensorEventListener
     public void onCreate() {
         super.onCreate();
 
-        File dataDirectory = new File(Environment.getExternalStorageDirectory() +
-                MyView.WORKING_DIRECTORY);
+        File dataDirectory = new File(this.getExternalFilesDir(null), TypingTaskActivity.WORKING_DIRECTORY);
         if (!dataDirectory.exists() && !dataDirectory.mkdirs()) {
             Log.e("MYDEBUG", "Failed to create directory: " + TypingTaskActivity.WORKING_DIRECTORY);
             Toast.makeText(this, "Couldn't create directory", Toast.LENGTH_SHORT).show();
@@ -65,7 +64,7 @@ public class TypingSensorsService extends Service implements SensorEventListener
         String genderCode = prefs.getString("genderCode", "");
         String conditionCode = prefs.getString("conditionCode", "");
 
-        String base = "TYPIING-" + participantCode + "-" +
+        String base = "TYPEME-" + participantCode + "-" +
                 genderCode + "-" + conditionCode;
 
         accFile = new File(dataDirectory, base+"-accelerometer.csv");

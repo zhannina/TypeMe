@@ -42,6 +42,8 @@ public class MyView extends View {
 
     ArrayList<Class<?>> classList;
 
+    public float pressure;
+
     public float radius;
     public float width;
     public float height;
@@ -59,10 +61,10 @@ public class MyView extends View {
     BufferedWriter bufferedWriter;
     StringBuilder stringBuilder = new StringBuilder();
     final String HEADER = "TimeStamp,Date,Participant,Gender,Condition,Block,"
-            + "Time(ms),GridTilePosition,Radius,IconCenterX,IconCenterY,TouchX,TouchY,InsideCircle\n";
+            + "Time(ms),GridTilePosition,Radius,IconCenterX,IconCenterY,TouchX,TouchY,InsideCircle,TouchSize\n";
 
 
-    public final static String WORKING_DIRECTORY = "/HeatMapData/";
+    public final static String WORKING_DIRECTORY = "/CirclesData/";
 
     Long startTime, endTime, diff;
 
@@ -128,7 +130,7 @@ public class MyView extends View {
             finishActivity();
         }
 
-        String base = "HeatMap-" + participantCode  + "-" +
+        String base = "Circles-" + participantCode  + "-" +
                 genderCode + "-" + conditionCode;
 
         file = new File(dataDirectory, base + ".csv");
@@ -173,10 +175,16 @@ public class MyView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float touchX, touchY;
+        float size = 0;
         touchX = event.getX();
         touchY = event.getY();
 
         switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+                pressure = event.getPressure();
+                size = event.getSize();
+                Log.d("size", size+"");
 
             case MotionEvent.ACTION_UP:
                 //Check if the point press is within the circle
@@ -191,10 +199,10 @@ public class MyView extends View {
                     diff = endTime-startTime;
                     Log.d("time", ""+diff);
 
-                    stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%d,%f,%d,%d,%f,%f,%s\n", ts, date, participantCode,
+                    stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%d,%f,%d,%d,%f,%f,%s,%f\n", ts, date, participantCode,
                             genderCode, conditionCode, blockCode, diff.toString(), pointsPos,
                             radius,
-                            points.get(pointsPos).x, (points.get(pointsPos).y), touchX, touchY, hitCircle));
+                            points.get(pointsPos).x, (points.get(pointsPos).y), touchX, touchY, hitCircle, size));
                     try {
                         bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());
                         bufferedWriter.flush();
@@ -228,10 +236,10 @@ public class MyView extends View {
                     String ts = tsLong.toString();
                     String date = DateFormat.getDateTimeInstance().format(new Date());
 
-                    stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%d,%f,%d,%d,%f,%f,%s\n", ts, date, participantCode,
+                    stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%d,%f,%d,%d,%f,%f,%s,%f\n", ts, date, participantCode,
                             genderCode, conditionCode, blockCode, diff.toString(), pointsPos,
                             radius,
-                            points.get(pointsPos).x, (points.get(pointsPos).y), touchX, touchY, hitCircle));
+                            points.get(pointsPos).x, (points.get(pointsPos).y), touchX, touchY, hitCircle, size));
                     try {
                         bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());
                         bufferedWriter.flush();
