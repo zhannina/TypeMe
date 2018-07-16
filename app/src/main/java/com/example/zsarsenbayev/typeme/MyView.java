@@ -186,8 +186,6 @@ public class MyView extends View {
                 size = event.getSize();
                 Log.d("size", size+"");
 
-            case MotionEvent.ACTION_UP:
-                //Check if the point press is within the circle
                 if (contains(event, points.get(pointsPos))) {
                     hitCircle = "True";
                     Long tsLong = System.currentTimeMillis();
@@ -248,6 +246,69 @@ public class MyView extends View {
                     }
                     stringBuilder.delete(0, stringBuilder.length());
                 }
+
+            case MotionEvent.ACTION_UP:
+                //Check if the point press is within the circle
+//                if (contains(event, points.get(pointsPos))) {
+//                    hitCircle = "True";
+//                    Long tsLong = System.currentTimeMillis();
+//                    String ts = tsLong.toString();
+//                    String date = DateFormat.getDateTimeInstance().format(new Date());
+//
+//                    endTime=System.currentTimeMillis();
+//
+//                    diff = endTime-startTime;
+//                    Log.d("time", ""+diff);
+//
+//                    stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%d,%f,%d,%d,%f,%f,%s,%f\n", ts, date, participantCode,
+//                            genderCode, conditionCode, blockCode, diff.toString(), pointsPos,
+//                            radius,
+//                            points.get(pointsPos).x, (points.get(pointsPos).y), touchX, touchY, hitCircle, size));
+//                    try {
+//                        bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());
+//                        bufferedWriter.flush();
+//                    } catch (IOException e) {
+//                        Log.e("MYDEBUG", "ERROR WRITING TO DATA FILES: e = " + e);
+//                    }
+//                    stringBuilder.delete(0, stringBuilder.length());
+//
+//                    if (positions.size() == points.size()) {
+//                        if (!drawbigcircles) {
+//                            drawbigcircles = true;
+//                            populateBigCirclesArrayList();
+//                        } else {
+//                            try {
+//                                bufferedWriter.close();
+//                            } catch (IOException e) {
+//                                Log.e("MYDEBUG", "ERROR CLOSING THE DATA FILES: e = " + e);
+//                            }
+//                            finishActivity();
+//                        }
+//                    } else {
+//                        Random r = new Random(System.nanoTime());
+//                        pointsPos = r.nextInt(points.size()); //between 0 and points.length
+//                        positions.add(pointsPos);
+//                        startTime = System.currentTimeMillis();
+//                        postInvalidate();
+//                    }
+//                } else {
+//                    hitCircle = "False";
+//                    Long tsLong = System.currentTimeMillis() / 1000;
+//                    String ts = tsLong.toString();
+//                    String date = DateFormat.getDateTimeInstance().format(new Date());
+//
+//                    stringBuilder.append(String.format("%s,%s,%s,%s,%s,%s,%s,%d,%f,%d,%d,%f,%f,%s,%f\n", ts, date, participantCode,
+//                            genderCode, conditionCode, blockCode, diff.toString(), pointsPos,
+//                            radius,
+//                            points.get(pointsPos).x, (points.get(pointsPos).y), touchX, touchY, hitCircle, size));
+//                    try {
+//                        bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());
+//                        bufferedWriter.flush();
+//                    } catch (IOException e) {
+//                        Log.e("MYDEBUG", "ERROR WRITING TO DATA FILES: e = " + e);
+//                    }
+//                    stringBuilder.delete(0, stringBuilder.length());
+//                }
         }
 
         postInvalidate();
