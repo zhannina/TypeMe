@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">TypeMe</string>
+    <string name="app_name">Stress IO</string>
+
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">About gesture</string>
+    <string name="slide_1_desc">When using this app, please use your habitual hand to hold the phone, and touch the phone screen with your thumb finger. Please do activities as fast as you can!</string>
+
+    <string name="slide_2_title">Circle Activity</string>
+    <string name="slide_2_desc">In this activity, some small circles will be presented on screen in sequence. please touch within the field of these circles to destroy them!</string>
+
+    <string name="slide_3_title">Find Icon activity</string>
+    <string name="slide_3_desc">In this activity, an icon will be shown to you, please remember this icon and click continue. Then touch the icon you remembered!</string>
+
+    <string name="slide_4_title">Typing activity</string>
+    <string name="slide_4_desc">In this activity, a sentence will be shown to you, and you need to type the sentence as fast as you could, then click submit!</string>
+
 </resources>

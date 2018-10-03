@@ -1,11 +1,9 @@
-package com.example.zsarsenbayev.typeme;
+package com.example.zsarsenbayev.typeme.typingActivity;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -18,10 +16,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.example.zsarsenbayev.typeme.MainActivity;
+import com.example.zsarsenbayev.typeme.R;
+import com.example.zsarsenbayev.typeme.sensorData.AccelerometerSensor;
+import com.example.zsarsenbayev.typeme.sensorData.BatterySensor;
+import com.example.zsarsenbayev.typeme.sensorData.LightSensor;
+import com.example.zsarsenbayev.typeme.sensorData.NetworkSensor;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.firestore.DocumentReference;
+//import com.google.firebase.firestore.WriteBatch;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,24 +69,30 @@ public class TypingTaskActivity extends AppCompatActivity {
     private String userInputStr;
     private String correctedLettersString;
     private String textViewString;
+    private String rootName = "Typing Activity";
+    private Intent accelerometerIntent;
+    private Intent batteryIntent;
+    private Intent lightIntent;
+    private Intent networkIntent;
 
     private int numberOfTotalEnteredLetters = 0;
 
+    private final String ACCELEROMETER_HEADER = "DeviceID,Acceleration_X,Acceleration_Y,Acceleration_Z,AppVersion";
+    private final String BATTERY_HEADER = "DeviceID,BatteryTemp,AppVersion";
+    private final String LIGHT_HEADER = "DeviceID,LightLuminance,AppVersion";
+    private final String NETWORK_HEADER = "deviceID,NetworkState,NetworkType,AppVersion";
+
     ArrayList<Class<?>> classList;
 
-    public static final String WORKING_DIRECTORY = "/TypeMeData/";
-    final String HEADER = "Date, Participant, Gender, Condition, Block, " +
-            "StartTimeStamp, EndTimeStamp, TimeToType(ms), DisplayedMessage, BackspaceCount, NumberOfTotalEnteredKeyStrokes, Difficulty, UserInputMessage, TextBeforeChange, TextAfterChange, CorrectedLettersArray\n";
-
-    private File file;
-    private BufferedWriter bufferedWriter;
-    private StringBuilder stringBuilder;
-
+    //public static final String WORKING_DIRECTORY = "/TypeMeData/";
+    final String HEADER = "deviceID," +
+            "StartTimeStamp,EndTimeStamp,TimeToType(ms),DisplayedMessage,BackspaceCount,NumberOfTotalEnteredKeyStrokes,Difficulty,UserInputMessage,TextBeforeChange,TextAfterChange,CorrectedLettersArray,AppVersion";
     SharedPreferences prefs;
-    String participantCode, genderCode, conditionCode, blockCode;
-    public static final String MyPREFERENCES = "MyPrefs";
+    String deviceID;
 
     InputMethodManager imm;
+
+    private DatabaseReference mDatabase;
 
     private ArrayList<String> simpleSentences = new ArrayList<String>(Arrays.asList(
             "Joe went to the store.",
@@ -95,12 +106,6 @@ public class TypingTaskActivity extends AppCompatActivity {
             "Will you help me with the math homework?",
             "The music is too loud for my ears."));
 
-//    private ArrayList<String> mediumSentences = new ArrayList<String>(Arrays.asList("Whatever you are, be a good one",
-//            "Be the change you wish to see in the world",
-//            "Try and fail, but never fail to try",
-//            "Do one thing every day that scares you",
-//            "Believe you can and you're halfway there"));
-
     private ArrayList<String> difficultSentences = new ArrayList<String>(Arrays.asList(
             "Since saucy jacks so happy are in this Give them thy fingers me thy lips to kiss.",
             "Make thee another self for love of me That beauty still may live in thine or thee.",
@@ -112,7 +117,6 @@ public class TypingTaskActivity extends AppCompatActivity {
             "Ah but those tears are pearl which thy love sheds And they are rich and ransom all ill deeds.",
             "But why thy odour matcheth not thy show The solve is this that thou dost common grow.",
             "And thou in this shalt find thy monument When tyrants' crests and tombs of brass are spent."));
-//    private int myRandomNumber;
 
 
     @Override
@@ -125,26 +129,70 @@ public class TypingTaskActivity extends AppCompatActivity {
             classList.add((Class<?>)test.get(i));
         }
 
-        Intent intentSensorService = new Intent(this, TypingSensorsService.class);
-        startService(intentSensorService);
+        fileHeader();
+        accelerometerIntent = new Intent(TypingTaskActivity.this, AccelerometerSensor.class);
+        accelerometerIntent.putExtra( "rootName", rootName );
+
+        batteryIntent = new Intent(TypingTaskActivity.this, BatterySensor.class);
+        batteryIntent.putExtra( "rootName", rootName );
+
+        lightIntent = new Intent( TypingTaskActivity.this, LightSensor.class );
+        lightIntent.putExtra( "rootName", rootName );
+
+        networkIntent = new Intent( TypingTaskActivity.this, NetworkSensor.class );
+        networkIntent.putExtra( "rootName", rootName );
+
+        startService(accelerometerIntent);
+        startService(batteryIntent);
+        startService(lightIntent);
+        startService(networkIntent);
+
+    }
+
+    public void fileHeader(){
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        prefs = getSharedPreferences( MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        deviceID = prefs.getString("device_id", "");
+
+        if(prefs.getBoolean("FirstTypingAccelerometerService", true)){
+            mDatabase.child(deviceID).child(rootName).child("Accelerometer").child("Date").setValue(ACCELEROMETER_HEADER);
+            prefs.edit().putBoolean("FirstTypingAccelerometerService", false);
+            prefs.edit().commit();
+        }
+
+        if(prefs.getBoolean("FirstTypingBatteryService", true)){
+            mDatabase.child(deviceID).child(rootName).child("Battery").child("Date").setValue(BATTERY_HEADER);
+            prefs.edit().putBoolean("FirstTypingBatteryService", false);
+            prefs.edit().commit();
+        }
+
+        if(prefs.getBoolean("FirstTypingLightService", true)){
+            mDatabase.child(deviceID).child(rootName).child("Light").child("Date").setValue(LIGHT_HEADER);
+            prefs.edit().putBoolean("FirstTypingLightService", false);
+            prefs.edit().commit();
+        }
+
+        if(prefs.getBoolean("FirstTypingNetworkService", true)){
+            mDatabase.child(deviceID).child(rootName).child( "Network" ).child("Date").setValue(NETWORK_HEADER);
+            prefs.edit().putBoolean("FirstTypingNetworkService", false);
+            prefs.edit().commit();
+        }
+
+
 
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        setContentView(R.layout.activity_typing_task);
+        setContentView( R.layout.activity_typing_task);
         messageTextView = (TextView) findViewById(R.id.messageTextView);
         submitButton = (Button) findViewById(R.id.submitButton);
         userInputEditText = (EditText) findViewById(R.id.userInputEditText);
-        stringBuilder = new StringBuilder();
+        prefs = getSharedPreferences( MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
 
-        prefs = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        participantCode = prefs.getString("participantCode", "");
-        genderCode = prefs.getString("genderCode", "");
-        conditionCode = prefs.getString("conditionCode", "");
-        blockCode = prefs.getString("blockCode", "");
-
+        deviceID = prefs.getString("device_id", "");
         imm = (InputMethodManager)this.getSystemService(Service.INPUT_METHOD_SERVICE);
 
         oldTexts = new ArrayList<>();
@@ -153,6 +201,12 @@ public class TypingTaskActivity extends AppCompatActivity {
 
         tempSimpleSentences = new ArrayList<>();
         tempDifficSentences = new ArrayList<>();
+
+        if(prefs.getBoolean("FirstTypingTask", true)){
+            mDatabase = FirebaseDatabase.getInstance().getReference();
+            mDatabase.child(deviceID).child(rootName).child("TypingData").child("Date").setValue(HEADER);
+            prefs.edit().putBoolean("FirstTypingTask", false);
+        }
 
         if (tempSimpleSentences.size()==0){
             tempSimpleSentences.addAll(simpleSentences);
@@ -165,30 +219,6 @@ public class TypingTaskActivity extends AppCompatActivity {
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES); // to disable autocompletion and autocorrection
 
         setMessage();
-
-        File dataDirectory = new File(this.getExternalFilesDir(null), WORKING_DIRECTORY);
-//        File dataDirectory = new File(this.getExternalFilesDir(null) + WORKING_DIRECTORY;
-        if( ! dataDirectory.exists() ) { // create directory if not exist
-            dataDirectory.mkdirs();
-        }
-        String base = "TypeMe-" + participantCode + "-" + genderCode + "-" + conditionCode;
-        file = new File(dataDirectory, base + ".csv");
-        Log.d("FILE", file+"");
-
-        try {
-            bufferedWriter = new BufferedWriter(new FileWriter(file, true));
-            if (prefs.getBoolean("TYPEHEADERS", false)) {
-                bufferedWriter.append(HEADER, 0, HEADER.length());
-                bufferedWriter.flush();
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean("TYPEHEADERS", true);
-                editor.commit();
-            }
-
-        } catch (IOException e) {
-            Log.i("MYDEBUG", "Error opening data files! Exception: " + e.toString());
-            System.exit(0);
-        }
 
         userInputEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,7 +243,6 @@ public class TypingTaskActivity extends AppCompatActivity {
         });
 
         userInputEditText.addTextChangedListener(new EditTextListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             protected void onTextChanged(String before, String old, String aNew, String after) {
                 completeOldText = before + old + after;
@@ -252,34 +281,35 @@ public class TypingTaskActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                date = DateFormat.getDateTimeInstance().format(new Date());
-                endTimeStamp = System.currentTimeMillis();
-                endTimeStampStr = String.valueOf(endTimeStamp);
-                timeMillis = endTimeStamp - startTimeStamp;
-                Log.d("TIME end: ", "" + endTimeStamp);
-                Log.d("timeMillis: ", "" + timeMillis);
                 userInputString = userInputEditText.getText().toString();
-                textViewString = messageTextView.getText().toString();
-
-                Log.d("DIFF: 3 ", difficulty);
-                stringBuilder.append(String.format("%s, %s, %s, %s, %s, %s, %s, %s, %s, %d, %d, %s, %s, %s, %s, %s\n", date, participantCode,
-                        genderCode, conditionCode, blockCode, startTimeStampStr, endTimeStampStr, String.valueOf(timeMillis), textViewString, backSpaceCount, numberOfTotalEnteredLetters, difficulty, userInputString, oldTextsString, newTextsString, correctedLettersString));
-
-                try {
-                    bufferedWriter.write(stringBuilder.toString(), 0, stringBuilder.length());
-                    bufferedWriter.flush();
-                } catch (IOException e) {
-                    Log.e("MYDEBUG", "ERROR WRITING TO DATA FILES: e = " + e);
+                if (userInputString.matches("")) {
+                    notice();
+                    return;
                 }
-                stringBuilder.delete(0, stringBuilder.length());
+                else {
+                    date = DateFormat.getDateTimeInstance().format(new Date());
+                    endTimeStamp = System.currentTimeMillis();
+                    endTimeStampStr = String.valueOf(endTimeStamp);
+                    timeMillis = endTimeStamp - startTimeStamp;
+                    Log.d("TIME end: ", "" + endTimeStamp);
+                    Log.d("timeMillis: ", "" + timeMillis);
+                    textViewString = messageTextView.getText().toString();
+                    Log.d("DIFF: 3 ", difficulty);
+                    String a_message = deviceID + ", " + startTimeStampStr + ", " + endTimeStampStr + ", " + String.valueOf(timeMillis) + ", " + textViewString + ", " + backSpaceCount + ", " + numberOfTotalEnteredLetters + ", " + difficulty + ", " + userInputString + ", " + oldTextsString + ", " + newTextsString + ", " + correctedLettersString + ", " + MainActivity.AppVersion;
+                    //TypingData typingData = new TypingData(date, deviceID, startTimeStampStr, endTimeStampStr, String.valueOf(timeMillis), textViewString, String.valueOf(backSpaceCount), String.valueOf(numberOfTotalEnteredLetters), difficulty, userInputString, oldTextsString, newTextsString, correctedLettersString);
+                    mDatabase.child(deviceID).child(rootName).child("TypingData").child(date).setValue(a_message);
+                    userInputEditText.setCursorVisible(false);
+                    userInputEditText.setText("");
+                    imm.hideSoftInputFromWindow(userInputEditText.getWindowToken(), 0);
+                    resetValues();
+                }
 
-                //resetting the values
-                userInputEditText.setCursorVisible(false);
-                userInputEditText.setText("");
-                imm.hideSoftInputFromWindow(userInputEditText.getWindowToken(), 0);
-                resetValues();
             }
         });
+    }
+
+    public void notice(){
+        Toast.makeText(this, "Input field cannot be empty", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -304,8 +334,6 @@ public class TypingTaskActivity extends AppCompatActivity {
     private void setMessage() {
         Random r = new Random(System.nanoTime());
         int i = r.nextInt(tempSimpleSentences.size());
-
-//        numberOfTotalEnteredLetters = 0;
 
         Log.d("RANDOM", ""+i);
         if (mode == 1){
@@ -337,17 +365,15 @@ public class TypingTaskActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            bufferedWriter.close();
-        } catch (IOException e) {
-            Log.e("MYDEBUG", "ERROR CLOSING THE DATA FILES: e = " + e);
-        }
-        finish();
+        //Aware.setSetting(this, Aware_Preferences.STATUS_ACCELEROMETER, false);
     }
 
     public void finishActivity(){
 
         if(classList.size()!=0) {
+
+            stopServices();
+
             Random r = new Random();
             int i = r.nextInt(classList.size());
             Intent intent = new Intent(TypingTaskActivity.this, classList.get(i));
@@ -358,10 +384,16 @@ public class TypingTaskActivity extends AppCompatActivity {
             finish();
         }
         else{
-            Toast.makeText(TypingTaskActivity.this, "Please return the phone", Toast.LENGTH_LONG).show();
-            finish();
+            stopServices();
+            TypingTaskActivity.this.finish();
         }
+    }
 
+    public void stopServices(){
+        stopService(accelerometerIntent);
+        stopService(batteryIntent);
+        stopService(lightIntent);
+        stopService( networkIntent );
     }
 
     @Override

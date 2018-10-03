@@ -1,12 +1,8 @@
-package com.example.zsarsenbayev.typeme;
+package com.example.zsarsenbayev.typeme.findIconActivity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +11,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.zsarsenbayev.typeme.MainActivity;
+import com.example.zsarsenbayev.typeme.R;
+import com.example.zsarsenbayev.typeme.sensorData.AccelerometerSensor;
+import com.example.zsarsenbayev.typeme.sensorData.BatterySensor;
+import com.example.zsarsenbayev.typeme.sensorData.LightSensor;
+import com.example.zsarsenbayev.typeme.sensorData.NetworkSensor;
+import com.example.zsarsenbayev.typeme.typingActivity.TypingTaskActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +31,7 @@ import java.util.Random;
 
 public class FindIconActivity extends AppCompatActivity {
 
-    private static final int PERMISSIONS_REQUEST = 12;
+    //private static final int PERMISSIONS_REQUEST = 12;
     Button continueBtn;
     ImageView imageToShow;
 
@@ -40,21 +46,88 @@ public class FindIconActivity extends AppCompatActivity {
 
     Long startTime, endTime, diff;
 
+    SharedPreferences prefs;
+
+    private String rootName = "FindIcon Activity";
+    private Intent accelerometerIntent;
+    private Intent batteryIntent;
+    private Intent lightIntent;
+    private Intent networkIntent;
+
+    private final String ACCELEROMETER_HEADER = "DeviceID,Acceleration_X,Acceleration_Y,Acceleration_Z,AppVersion";
+    private final String BATTERY_HEADER = "DeviceID,BatteryTemp,AppVersion";
+    private final String LIGHT_HEADER = "DeviceID,LightLuminance,AppVersion";
+    private final String NETWORK_HEADER = "deviceID,NetworkState,NetworkType,AppVersion";
+
+    String deviceID;
+    private DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find_icon);
+        setContentView( R.layout.activity_find_icon);
         populateArrayList();
-        SharedPreferences prefs = getSharedPreferences(DisplayGridActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        prefs = getSharedPreferences( DisplayGridActivity.MyPREFERENCES, Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("FIRSTTIME", true);
         editor.commit();
-        requestPermissions();
+        //requestPermissions();
 
-        Intent intentSensorService = new Intent(this, IconsSensorsService.class);
-        startService(intentSensorService);
+        fileHeader();
+        accelerometerIntent = new Intent(FindIconActivity.this, AccelerometerSensor.class);
+        accelerometerIntent.putExtra( "rootName", rootName );
+
+        batteryIntent = new Intent(FindIconActivity.this, BatterySensor.class);
+        batteryIntent.putExtra( "rootName", rootName );
+
+        lightIntent = new Intent( FindIconActivity.this, LightSensor.class );
+        lightIntent.putExtra( "rootName", rootName );
+
+        networkIntent = new Intent( FindIconActivity.this, NetworkSensor.class );
+        networkIntent.putExtra( "rootName", rootName );
+
+        startService(accelerometerIntent);
+        startService(batteryIntent);
+        startService(lightIntent);
+        startService(networkIntent);
+
     }
+
+    public void fileHeader(){
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        prefs = getSharedPreferences( MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        deviceID = prefs.getString("device_id", "");
+
+        if(prefs.getBoolean("FirstFindIconAccelerometerService", true)){
+            mDatabase.child(deviceID).child(rootName).child("Accelerometer").child("Date").setValue(ACCELEROMETER_HEADER);
+            prefs.edit().putBoolean("FirstFindIconAccelerometerService", false);
+            prefs.edit().commit();
+        }
+
+        if(prefs.getBoolean("FirstFindIconBatteryService", true)){
+            mDatabase.child(deviceID).child(rootName).child("Battery").child("Date").setValue(BATTERY_HEADER);
+            prefs.edit().putBoolean("FirstFindIconBatteryService", false);
+            prefs.edit().commit();
+        }
+
+        if(prefs.getBoolean("FirstFindIconLightService", true)){
+            mDatabase.child(deviceID).child(rootName).child("Light").child("Date").setValue(LIGHT_HEADER);
+            prefs.edit().putBoolean("FirstFindIconLightService", false);
+            prefs.edit().commit();
+        }
+
+        if(prefs.getBoolean("FirstFindIconNetworkService", true)){
+            mDatabase.child(deviceID).child(rootName).child( "Network" ).child("Date").setValue(NETWORK_HEADER);
+            prefs.edit().putBoolean("FirstFindIconNetworkService", false);
+            prefs.edit().commit();
+        }
+
+
+
+    }
+
 
     @Override
     protected void onResume() {
@@ -175,47 +248,11 @@ public class FindIconActivity extends AppCompatActivity {
         icons.add(new CellContent("YouTube", R.drawable.youtube));
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    requestPermissions();
-
-                }
-                return;
-            }
-
-        }
-    }
-
-    private void requestPermissions()
-    {
-        Log.d("TAG", "Whatever1");
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Log.d("TAG", "Whatever2");
-
-            // No explanation needed, we can request the permission.
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    PERMISSIONS_REQUEST);
-        }
-        else {
-            Log.d("TAG", "Whatever3");
-
-        }
-    }
-
     public void finishActivity(){
 
-        if(classList.size()!=0) {
+        if(classList.size() != 0) {
+            stopServices();
+
             Random r = new Random();
             int i = r.nextInt(classList.size());
             Intent intent = new Intent(FindIconActivity.this, classList.get(i));
@@ -225,10 +262,24 @@ public class FindIconActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(getApplicationContext(), "Please return the phone", Toast.LENGTH_LONG).show();
-            finish();
+
+            stopServices();
+            FindIconActivity.this.finish();
+
         }
 
+    }
+
+    public void stopServices(){
+        stopService(accelerometerIntent);
+        stopService(batteryIntent);
+        stopService(lightIntent);
+        stopService( networkIntent );
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
     }
 
 

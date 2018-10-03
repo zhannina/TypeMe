@@ -1,4 +1,4 @@
-package com.example.zsarsenbayev.typeme;
+package com.example.zsarsenbayev.typeme.findIconActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.zsarsenbayev.typeme.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +57,7 @@ public class GridViewCustomAdapter extends ArrayAdapter {
 
         if (cell == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            cell = inflater.inflate(R.layout.grid_cell, parent, false);
+            cell = inflater.inflate( R.layout.grid_cell, parent, false);
 
 
             TextView textViewTitle = (TextView) cell.findViewById(R.id.textView);

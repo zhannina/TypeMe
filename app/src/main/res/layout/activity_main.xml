@@ -4,128 +4,133 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.zsarsenbayev.typeme.MainActivity"
-    android:orientation="vertical"
-    >
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:paddingTop="40dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-
-        <TableRow>
+    android:baselineAligned="false"
+    android:orientation="vertical">
+<!--    tools:context="com.example.zsarsenbayev.typeme.MainActivity"> -->
 
 
-            <Button
-                android:id="@+id/saveButton"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="368dp"
+            android:layout_height="500dp"
+            android:scrollbarStyle="insideInset"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="0dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:onClick="clickSave"
-                android:text="Save"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/exitButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:onClick="clickExit"
-                android:text="Exit"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="350dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Consent (Step 1 of 5)"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:id="@+id/intro"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:paddingTop="5sp"
+                    android:textSize="15sp"
+                    android:text="Welcome to TypeMe! This app is part of a scientific study, in which we aim to learn more about how human interactions with mobile devices are affected by contextual factors."
+                     />
 
-    <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp">
+                <TextView
+                    android:id="@+id/con_portrait"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:paddingTop="5sp"
+                    android:textSize="15sp"
+                    android:text="ortrait of the researchers that organise the study"
+                     />
 
-        <TableRow
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp">
+                <TextView
+                    android:id="@+id/con_contact"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:paddingTop="5sp"
+                    android:textSize="15sp"
+                    android:text="This study is conducted by Tilman Dingler and Zhanna Sarsenbayeva at the University of Melbourne. In case you have questions, please contact us at ******." />
 
-            <TextView
-                android:id="@+id/paramLabelPart"
-                android:gravity="right"
-                android:paddingRight="5dp"
-                android:text="Participant"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                <TextView
+                    android:id="@+id/con_esm"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:paddingTop="5sp"
+                    android:textSize="15sp"
+                    android:text="From time to time, TypeMe will suggest you to do some activities, mostly through notifications. However, if you don't want to wait, you can also proactively launch the app and start doing them." />
 
-            <Spinner
-                android:id="@+id/paramParticipant"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:singleLine="true" />
-        </TableRow>
+                <TextView
+                    android:id="@+id/con_data"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:paddingTop="5sp"
+                    android:textSize="15sp"
+                    android:text="By pressing accept, you allow TypeMe to anonymously collect usage data in the background. All the data will be securely stored on a server in compliance with European data protection laws (BGBl. I S. 2325). Data will only be uploaded when you're connected to WiFi to prevent any upload cost. Your data will only be used in the context of our research and will never be shared with third parties. You can withdraw from the study at any moment by simply uninstalling the app. Thanks! And have a nice day!" />
+            </LinearLayout>
+        </ScrollView>
 
-        <TableRow
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp">
+        <Button
+            android:id="@+id/quit"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_marginBottom="36dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:text="Quit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/accept"
+            app:layout_constraintHorizontal_bias="0.413"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/paramLabelGender"
-                android:gravity="right"
-                android:paddingRight="5dp"
-                android:text="Gender"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+        <Button
+            android:id="@+id/accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginRight="60dp"
+            android:text="Accept"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <Spinner
-                android:id="@+id/paramGender"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </TableRow>
+    </android.support.constraint.ConstraintLayout>
 
-        <TableRow
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="612dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="-1dp">
 
-            <TextView
-                android:id="@+id/paramLabelCondition"
-                android:gravity="right"
-                android:paddingRight="5dp"
-                android:text="Condition"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <Spinner
-                android:id="@+id/paramCondition"
-                android:layout_weight="1"
-                android:gravity="left" />
-        </TableRow>
-
-        <TableRow
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp">
-
-            <TextView
-                android:id="@+id/paramLabelBlock"
-                android:gravity="right"
-                android:paddingRight="5dp"
-                android:text="Block"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <Spinner
-                android:id="@+id/paramBlock"
-                android:layout_weight="1"
-                android:gravity="left" />
-        </TableRow>
-
-    </TableLayout>
-
-
-    <Button
-        android:layout_width="368dp"
-        android:layout_height="wrap_content"
-        android:text="Start"
-        android:id="@+id/startButton"
-        />
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

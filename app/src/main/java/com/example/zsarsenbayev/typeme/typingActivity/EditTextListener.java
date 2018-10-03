@@ -1,4 +1,4 @@
-package com.example.zsarsenbayev.typeme;
+package com.example.zsarsenbayev.typeme.typingActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
