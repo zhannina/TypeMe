@@ -41,6 +41,7 @@ public class FindIconActivity extends AppCompatActivity {
     String iconName;
     TextView iconNameTextView, findIconText;
     ArrayList<Class<?>> classList;
+    ArrayList<Class<?>> instructionList;
 
     public static HashMap<CellContent, Integer> iconsMap = new HashMap<>();
 
@@ -146,9 +147,14 @@ public class FindIconActivity extends AppCompatActivity {
 
         classList = new ArrayList<Class<?>>();
         ArrayList test = getIntent().getParcelableArrayListExtra("activity");
-
         for(int i = 0; i < test.size(); i++){
             classList.add((Class<?>)test.get(i));
+        }
+
+        instructionList = new ArrayList<Class<?>>();
+        ArrayList test2 = getIntent().getParcelableArrayListExtra("activity instruction");
+        for(int i = 0; i < test2.size(); i++){
+            instructionList.add((Class<?>)test2.get(i));
         }
 
         SharedPreferences prefs = getSharedPreferences(DisplayGridActivity.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -250,19 +256,19 @@ public class FindIconActivity extends AppCompatActivity {
 
     public void finishActivity(){
 
-        if(classList.size() != 0) {
-            stopServices();
-
+        if(instructionList.size()!=0) {
             Random r = new Random();
-            int i = r.nextInt(classList.size());
-            Intent intent = new Intent(FindIconActivity.this, classList.get(i));
-            classList.remove(i);
-            Log.d("CLASSLIST ICONS", classList+"");
+            int i = r.nextInt(instructionList.size());
+
+            Intent intent = new Intent(FindIconActivity.this, instructionList.get(i));
+            instructionList.remove(i);
             intent.putExtra("activity", classList);
+            intent.putExtra("activity instruction", instructionList);
+            intent.putExtra( "activity index", i );
+
             startActivity(intent);
             finish();
-        } else {
-
+        }else {
             stopServices();
             FindIconActivity.this.finish();
 
@@ -280,6 +286,7 @@ public class FindIconActivity extends AppCompatActivity {
     @Override
     public void onDestroy(){
         super.onDestroy();
+        stopServices();
     }
 
 

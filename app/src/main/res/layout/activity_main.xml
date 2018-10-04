@@ -34,7 +34,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Consent (Step 1 of 5)"
+                    android:text="Informed Consent"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -59,7 +59,7 @@
                     android:layout_marginTop="5sp"
                     android:paddingTop="5sp"
                     android:textSize="15sp"
-                    android:text="ortrait of the researchers that organise the study"
+                    android:text="Information the researchers that organise the study:"
                      />
 
                 <TextView
@@ -93,7 +93,7 @@
                     android:layout_marginTop="5sp"
                     android:paddingTop="5sp"
                     android:textSize="15sp"
-                    android:text="By pressing accept, you allow TypeMe to anonymously collect usage data in the background. All the data will be securely stored on a server in compliance with European data protection laws (BGBl. I S. 2325). Data will only be uploaded when you're connected to WiFi to prevent any upload cost. Your data will only be used in the context of our research and will never be shared with third parties. You can withdraw from the study at any moment by simply uninstalling the app. Thanks! And have a nice day!" />
+                    android:text="By pressing accept, you allow TypeMe to anonymously collect usage data in the background. All the data will be securely stored on a server in compliance with European data protection laws (BGBl. I S. 2325). Your data will only be used in the context of our research and will never be shared with third parties. You can withdraw from the study at any moment by simply uninstalling the app. Thanks! And have a nice day!" />
             </LinearLayout>
         </ScrollView>
 

@@ -25,6 +25,9 @@ import android.provider.Settings.Secure;
 
 import com.example.zsarsenbayev.typeme.circleActivity.CirclesActivity;
 import com.example.zsarsenbayev.typeme.findIconActivity.FindIconActivity;
+import com.example.zsarsenbayev.typeme.instructions.Circle_instruction;
+import com.example.zsarsenbayev.typeme.instructions.FindIcon_instruction;
+import com.example.zsarsenbayev.typeme.instructions.Typing_instruction;
 import com.example.zsarsenbayev.typeme.notification.MyForegroundService;
 import com.example.zsarsenbayev.typeme.sensorData.ApplicationSensor;
 import com.example.zsarsenbayev.typeme.typingActivity.TypingTaskActivity;
@@ -33,7 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MainActivity extends AppCompatActivity {
-    public static ArrayList<Class<?>> activities;
+    public static ArrayList<Class<?>> activities, activity_instructions;
 
     private static final int PERMISSIONS_REQUEST = 12;
     private Button quitButton;
@@ -41,24 +44,17 @@ public class MainActivity extends AppCompatActivity {
 
     private String rootName = "Timezone";
     private String TIMEZONE_HEADER = "deviceID,timezone,AppVersion";
-    //private Button continueButton;
     private Button confirmQuitButton;
 
     public static int number_of_task = 0;
-
-//    int randomNumber;
     String device_id;
 
     SharedPreferences sharedPrefs;
-
     DatabaseReference mDatabase;
 
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String COMPLETED_ONBOARDING_PREF_NAME = "On Boarding Activity";
-    public static final String QUESTIONNAIRE_NOT_FINISHED = "QuestionnaireNotFinished";
     public static final String AppVersion = "1.0";
-
-    private Intent applicationIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +62,16 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.confirm_quit);
         activities = new ArrayList<Class<?>>();
+        activity_instructions = new ArrayList<Class<?>>();
 
         activities.add(CirclesActivity.class);
         activities.add(FindIconActivity.class);
         activities.add(TypingTaskActivity.class);
         activities.add(QuestionnaireActivity.class);
+
+        activity_instructions.add( Circle_instruction.class);
+        activity_instructions.add( FindIcon_instruction.class);
+        activity_instructions.add( Typing_instruction.class);
 
         sharedPrefs = this.getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -162,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCurrentTimezone(){
 
-
         Calendar calendar = Calendar.getInstance();
 
         TimeZone tz = TimeZone.getDefault();
@@ -183,8 +183,6 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.child(device_id).child(rootName).child(date).setValue(timezone_message);
 
     }
-
-
 
     private void requestPermissions()
     {
@@ -238,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
         Intent questionnaireIntent = new Intent( MainActivity.this, activities.get(activitySize) );
         activities.remove(activitySize);
         questionnaireIntent.putExtra("activity", activities);
+        questionnaireIntent.putExtra( "activity instruction", activity_instructions );
         startActivity( questionnaireIntent );
 
     }

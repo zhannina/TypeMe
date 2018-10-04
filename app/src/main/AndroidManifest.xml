@@ -40,6 +40,15 @@
         <activity android:name=".OnboardingActivity"
             android:screenOrientation="portrait"></activity>
 
+        <activity android:name=".instructions.Circle_instruction"
+            android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".instructions.FindIcon_instruction"
+            android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".instructions.Typing_instruction"
+            android:screenOrientation="portrait"></activity>
+
         <service
             android:name=".notification.MyJobService"
             android:label="Word service"

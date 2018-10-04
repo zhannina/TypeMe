@@ -37,7 +37,6 @@ public class CirclesActivity extends AppCompatActivity {
     String deviceID;
     private DatabaseReference mDatabase;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +133,7 @@ public class CirclesActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        stopServices();
     }
 
     @Override

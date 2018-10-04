@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.zsarsenbayev.typeme.MainActivity;
+import com.example.zsarsenbayev.typeme.QuestionnaireActivity;
 import com.example.zsarsenbayev.typeme.R;
 import com.example.zsarsenbayev.typeme.sensorData.AccelerometerSensor;
 import com.example.zsarsenbayev.typeme.sensorData.BatterySensor;
@@ -83,6 +84,7 @@ public class TypingTaskActivity extends AppCompatActivity {
     private final String NETWORK_HEADER = "deviceID,NetworkState,NetworkType,AppVersion";
 
     ArrayList<Class<?>> classList;
+    ArrayList<Class<?>> instructionList;
 
     //public static final String WORKING_DIRECTORY = "/TypeMeData/";
     final String HEADER = "deviceID," +
@@ -123,10 +125,17 @@ public class TypingTaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         classList = new ArrayList<Class<?>>();
         ArrayList test = getIntent().getParcelableArrayListExtra("activity");
         for(int i = 0; i < test.size(); i++){
             classList.add((Class<?>)test.get(i));
+        }
+
+        instructionList = new ArrayList<Class<?>>();
+        ArrayList test2 = getIntent().getParcelableArrayListExtra("activity instruction");
+        for(int i = 0; i < test2.size(); i++){
+            instructionList.add((Class<?>)test2.get(i));
         }
 
         fileHeader();
@@ -365,21 +374,22 @@ public class TypingTaskActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopServices();
         //Aware.setSetting(this, Aware_Preferences.STATUS_ACCELEROMETER, false);
     }
 
     public void finishActivity(){
 
-        if(classList.size()!=0) {
-
-            stopServices();
-
+        if(instructionList.size()!=0) {
             Random r = new Random();
-            int i = r.nextInt(classList.size());
-            Intent intent = new Intent(TypingTaskActivity.this, classList.get(i));
-            classList.remove(i);
-            Log.d("CLASSLIST TYPING", classList+"");
+            int i = r.nextInt(instructionList.size());
+
+            Intent intent = new Intent(TypingTaskActivity.this, instructionList.get(i));
+            instructionList.remove(i);
             intent.putExtra("activity", classList);
+            intent.putExtra("activity instruction", instructionList);
+            intent.putExtra( "activity index", i );
+
             startActivity(intent);
             finish();
         }

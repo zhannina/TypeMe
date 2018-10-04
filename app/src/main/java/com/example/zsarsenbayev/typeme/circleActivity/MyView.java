@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.zsarsenbayev.typeme.MainActivity;
+import com.example.zsarsenbayev.typeme.findIconActivity.FindIconActivity;
 import com.example.zsarsenbayev.typeme.sensorData.AccelerometerSensor;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -46,6 +47,7 @@ public class MyView extends View {
     private int pointsPos; //Which point we will be drawing
 
     ArrayList<Class<?>> classList;
+    ArrayList<Class<?>> instructionList;
 
     public float radius;
     public float width;
@@ -111,6 +113,12 @@ public class MyView extends View {
         ArrayList test = ((Activity)getContext()).getIntent().getParcelableArrayListExtra("activity");
         for(int i = 0; i < test.size(); i++){
             classList.add((Class<?>)test.get(i));
+        }
+
+        instructionList = new ArrayList<Class<?>>();
+        ArrayList test2 = ((Activity)getContext()).getIntent().getParcelableArrayListExtra("activity instruction");
+        for(int i = 0; i < test2.size(); i++){
+            instructionList.add((Class<?>)test2.get(i));
         }
 
         if(prefs.getBoolean("FirstCircleTask", true)){
@@ -252,17 +260,19 @@ public class MyView extends View {
 
     private void finishActivity() {
 
-        if(classList.size()!=0) {
-            stopServices();
+        if(instructionList.size()!=0) {
             Random r = new Random();
-            int i = r.nextInt(classList.size());
-            Intent intent  = new Intent(this.getContext(), classList.get(i));
-            classList.remove(i);
-            Log.d("CLASSLIST CIRCLES", classList+"");
+            int i = r.nextInt(instructionList.size());
+
+            Intent intent = new Intent(this.getContext(), instructionList.get(i));
+            instructionList.remove(i);
             intent.putExtra("activity", classList);
+            intent.putExtra("activity instruction", instructionList);
+            intent.putExtra( "activity index", i );
+
             getContext().startActivity(intent);
             ((Activity)this.getContext()).finish();
-        }else{
+        } else{
             stopServices();
             ((Activity)this.getContext()).finish();
         }

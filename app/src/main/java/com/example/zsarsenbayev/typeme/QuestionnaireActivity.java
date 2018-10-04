@@ -38,6 +38,7 @@ public class QuestionnaireActivity extends AppCompatActivity {
     private String secondChoice = "";
 
     ArrayList<Class<?>> classList;
+    ArrayList<Class<?>> instructionList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +47,15 @@ public class QuestionnaireActivity extends AppCompatActivity {
         setContentView(R.layout.questionnaire);
 
         classList = new ArrayList<Class<?>>();
-        ArrayList test = getIntent().getParcelableArrayListExtra("activity");
-        for(int i = 0; i < test.size(); i++){
-            classList.add((Class<?>)test.get(i));
+        ArrayList test1 = getIntent().getParcelableArrayListExtra("activity");
+        for(int i = 0; i < test1.size(); i++){
+            classList.add((Class<?>)test1.get(i));
+        }
+
+        instructionList = new ArrayList<Class<?>>();
+        ArrayList test2 = getIntent().getParcelableArrayListExtra("activity instruction");
+        for(int i = 0; i < test2.size(); i++){
+            instructionList.add((Class<?>)test2.get(i));
         }
 
         prefs = getApplicationContext().getSharedPreferences(MYPREFS, Context.MODE_PRIVATE);
@@ -176,12 +183,16 @@ public class QuestionnaireActivity extends AppCompatActivity {
 
     public void finishActivity(){
 
-        if(classList.size()!=0) {
+        if(instructionList.size()!=0) {
             Random r = new Random();
-            int i = r.nextInt(classList.size());
-            Intent intent = new Intent(QuestionnaireActivity.this, classList.get(i));
-            classList.remove(i);
+            int i = r.nextInt(instructionList.size());
+
+            Intent intent = new Intent(QuestionnaireActivity.this, instructionList.get(i));
+            instructionList.remove(i);
             intent.putExtra("activity", classList);
+            intent.putExtra("activity instruction", instructionList);
+            intent.putExtra( "activity index", i );
+
             startActivity(intent);
             finish();
         }
