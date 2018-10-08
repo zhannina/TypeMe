@@ -2,6 +2,9 @@ package com.example.zsarsenbayev.typeme;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +31,7 @@ import com.example.zsarsenbayev.typeme.findIconActivity.FindIconActivity;
 import com.example.zsarsenbayev.typeme.instructions.Circle_instruction;
 import com.example.zsarsenbayev.typeme.instructions.FindIcon_instruction;
 import com.example.zsarsenbayev.typeme.instructions.Typing_instruction;
+import com.example.zsarsenbayev.typeme.notification.ClockChecker;
 import com.example.zsarsenbayev.typeme.notification.MyForegroundService;
 import com.example.zsarsenbayev.typeme.sensorData.ApplicationSensor;
 import com.example.zsarsenbayev.typeme.typingActivity.TypingTaskActivity;
@@ -38,6 +42,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
     public static ArrayList<Class<?>> activities, activity_instructions;
 
+    private static final String TAG = "Main Activity";
     private static final int PERMISSIONS_REQUEST = 12;
     private Button quitButton;
     private Button acceptButton;
@@ -46,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private String TIMEZONE_HEADER = "deviceID,timezone,AppVersion";
     private Button confirmQuitButton;
 
-    public static int number_of_task = 0;
     String device_id;
 
     SharedPreferences sharedPrefs;
@@ -64,11 +68,14 @@ public class MainActivity extends AppCompatActivity {
         activities = new ArrayList<Class<?>>();
         activity_instructions = new ArrayList<Class<?>>();
 
+        //The activities list contains all the activities of the app
         activities.add(CirclesActivity.class);
         activities.add(FindIconActivity.class);
         activities.add(TypingTaskActivity.class);
         activities.add(QuestionnaireActivity.class);
 
+        //The instruction pages are corresponding to the three activities
+        //In particular: FindIcon activity, Typing activity and Circle Activity
         activity_instructions.add( Circle_instruction.class);
         activity_instructions.add( FindIcon_instruction.class);
         activity_instructions.add( Typing_instruction.class);
@@ -83,10 +90,14 @@ public class MainActivity extends AppCompatActivity {
         confirmQuitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //editor.putInt("tasks of today", number_of_task++);
+                // cancel current notification schedules
+                cancelJob();
+
+                //reschedule the notification service to make sure
+                // no notification is scheduled within 1 hour of a task finish
+                scheduleClockChecker();
 
                 finish();
-
             }
         });
 
@@ -98,13 +109,16 @@ public class MainActivity extends AppCompatActivity {
             acceptButton = (Button) findViewById(R.id.accept);
             requestPermissions();
 
+            //If user does not agree the policy,
+            // exit the application
             quitButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    System.exit(0);
+                    finish();
                 }
             });
 
+            //Once user accept the informed consent, remember the choice and start the instructions
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -127,6 +141,8 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         else{
+
+            // If the foreground service is running, we do not start again
             if(!isMyServiceRunning(MyForegroundService.class)){
                 startForegroundService();
             }
@@ -135,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("device_id", device_id);
             editor.commit();
 
+            // record the timezone information each time the application is opened
             getCurrentTimezone();
             requestPermissions();
 
@@ -143,6 +160,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Cancel all the current jobs of this application
+    public void cancelJob(){
+        JobScheduler jobScheduler = (JobScheduler) this.getSystemService(Context.JOB_SCHEDULER_SERVICE );
+        jobScheduler.cancelAll();
+    }
+
+    //start the "ClockChecker" class again from here
+    public void scheduleClockChecker(){
+        ComponentName componentName = new ComponentName(this, ClockChecker.class);
+        JobInfo jobInfo = new JobInfo.Builder(12085, componentName)
+                .setRequiresCharging(false)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .build();
+
+        JobScheduler jobScheduler = (JobScheduler)getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = jobScheduler.schedule(jobInfo);
+        if (resultCode == JobScheduler.RESULT_SUCCESS) {
+            Log.d(TAG, "Clock Checker Job scheduled!");
+        } else {
+            Log.d(TAG, "Clock Checker Job not scheduled");
+        }
+
+    }
+
+
+    //Check if user has granted the permissions
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -161,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Record current timezone information and transmit it to Firebase
     public void getCurrentTimezone(){
 
         Calendar calendar = Calendar.getInstance();
@@ -184,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Request user permissions for the first launch of this application
     private void requestPermissions()
     {
         Log.d("TAG", "Whatever1");
@@ -229,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-
+    //Start the questionnaire activity before the other activities
     private void startMyActivity() {
 
         int activitySize = activities.size() - 1;

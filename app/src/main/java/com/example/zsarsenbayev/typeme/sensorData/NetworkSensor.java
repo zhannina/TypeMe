@@ -77,6 +77,7 @@ public class NetworkSensor extends Aware_Sensor {
                 break;
         }
 
+        // Record the network type and store in Firebase database
         String a_message = deviceID + "," + networkState + "," + networkType + "," + MainActivity.AppVersion;
 
         date = DateFormat.getDateTimeInstance().format(new Date());

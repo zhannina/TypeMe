@@ -44,6 +44,7 @@ public class BatterySensor extends Aware_Sensor {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand( intent, startId, startId );
 
+        // Get the toot name from intent
         rootName = intent.getStringExtra( "rootName" );
         SharedPreferences prefs = getSharedPreferences( MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         deviceID = prefs.getString("device_id", "");
@@ -60,6 +61,8 @@ public class BatterySensor extends Aware_Sensor {
 
 
     public class BatteryReceiver extends BroadcastReceiver {
+        //Each time there is a change in battery temperature,
+        // record the message in Firebase database
         @Override
         public void onReceive(Context context, Intent intent) {
             int temperature = intent.getIntExtra( BatteryManager.EXTRA_TEMPERATURE, -1 );

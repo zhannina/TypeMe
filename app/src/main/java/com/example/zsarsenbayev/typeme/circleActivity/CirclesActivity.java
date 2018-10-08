@@ -66,6 +66,7 @@ public class CirclesActivity extends AppCompatActivity {
 
     }
 
+    //If the services are start for the first time, set the head in Firebase database
     public void fileHeader(){
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -98,7 +99,7 @@ public class CirclesActivity extends AppCompatActivity {
 
     }
 
-        public void stopServices(){
+    public void stopServices(){
         stopService(accelerometerIntent);
         stopService(batteryIntent);
         stopService(lightIntent);
@@ -133,6 +134,7 @@ public class CirclesActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //If the activity is stopped, stop the related services
         stopServices();
     }
 

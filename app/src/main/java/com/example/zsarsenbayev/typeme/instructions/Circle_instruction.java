@@ -24,12 +24,14 @@ public class Circle_instruction extends AppCompatActivity {
 
         setContentView( R.layout.circle_instruction);
 
+        // form the remaining activity list
         classList = new ArrayList<Class<?>>();
         ArrayList test1 = getIntent().getParcelableArrayListExtra("activity");
         for(int i = 0; i < test1.size(); i++){
             classList.add((Class<?>)test1.get(i));
         }
 
+        // form the remianing instruction list
         instructionList = new ArrayList<Class<?>>();
         ArrayList test2 = getIntent().getParcelableArrayListExtra("activity instruction");
         for(int i = 0; i < test2.size(); i++){
@@ -50,6 +52,7 @@ public class Circle_instruction extends AppCompatActivity {
 
     }
 
+    // start the activity with the same list index as the instruction activity
     public void startActivity(){
         Intent intent = new Intent(this, classList.get(activity_index));
         classList.remove(activity_index);

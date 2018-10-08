@@ -44,6 +44,7 @@ public class LightSensor extends Aware_Sensor implements SensorEventListener {
     }
 
 
+    // Each time the light sensor data changed, record it and store in Firebase database
     @Override
     public void onSensorChanged(SensorEvent event) {
 
@@ -65,6 +66,7 @@ public class LightSensor extends Aware_Sensor implements SensorEventListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand( intent, flags, startId );
 
+        // Get the root name from intent
         rootName = intent.getStringExtra( "rootName" );
         SharedPreferences prefs = getSharedPreferences( MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         deviceID = prefs.getString("device_id", "");

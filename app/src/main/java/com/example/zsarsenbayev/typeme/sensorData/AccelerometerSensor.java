@@ -50,11 +50,10 @@ public class AccelerometerSensor extends Aware_Sensor implements SensorEventList
         float accY = event.values[1];
         float accZ = event.values[2];
 
-        //String ts = String.valueOf(System.currentTimeMillis());
         date = DateFormat.getDateTimeInstance().format(new Date());
 
+        //form the accelerometer message and load it to Firebase
         String acc_message = deviceID + "," + accX + "," + accY + "," + accZ + "," + MainActivity.AppVersion;
-
         mDatabase.child(deviceID).child(rootName).child("Accelerometer").child(date).setValue(acc_message);
 
     }
@@ -62,6 +61,7 @@ public class AccelerometerSensor extends Aware_Sensor implements SensorEventList
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand( intent, flags, startId );
 
+        //get the root name for Firebase storage
         rootName = intent.getStringExtra( "rootName" );
         SharedPreferences prefs = getSharedPreferences( MainActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         deviceID = prefs.getString("device_id", "");
@@ -79,7 +79,6 @@ public class AccelerometerSensor extends Aware_Sensor implements SensorEventList
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     @Override

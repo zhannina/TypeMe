@@ -255,7 +255,6 @@ public class MyView extends View {
         Random r1 = new Random(System.nanoTime());
         pointsPos = r1.nextInt(points.size()); //between 0 and points.length
         positions.add(pointsPos);
-
     }
 
     private void finishActivity() {
